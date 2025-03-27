@@ -6,7 +6,7 @@ import { BookOpen, Video, Calendar, Activity, BarChart, Clock } from 'lucide-rea
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-type ResourceCategory = 'all' | 'articles' | 'videos' | 'exercises';
+type ResourceCategory = 'all' | 'article' | 'video' | 'exercise';
 
 interface Resource {
   id: number;
@@ -134,8 +134,8 @@ const Resources = () => {
             </Button>
             
             <Button 
-              variant={category === 'articles' ? 'default' : 'outline'}
-              onClick={() => setCategory('articles')}
+              variant={category === 'article' ? 'default' : 'outline'}
+              onClick={() => setCategory('article')}
               className="rounded-full"
             >
               <BookOpen className="mr-2 h-4 w-4" />
@@ -143,8 +143,8 @@ const Resources = () => {
             </Button>
             
             <Button 
-              variant={category === 'videos' ? 'default' : 'outline'}
-              onClick={() => setCategory('videos')}
+              variant={category === 'video' ? 'default' : 'outline'}
+              onClick={() => setCategory('video')}
               className="rounded-full"
             >
               <Video className="mr-2 h-4 w-4" />
@@ -152,8 +152,8 @@ const Resources = () => {
             </Button>
             
             <Button 
-              variant={category === 'exercises' ? 'default' : 'outline'}
-              onClick={() => setCategory('exercises')}
+              variant={category === 'exercise' ? 'default' : 'outline'}
+              onClick={() => setCategory('exercise')}
               className="rounded-full"
             >
               <Activity className="mr-2 h-4 w-4" />
