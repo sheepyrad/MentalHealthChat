@@ -10,6 +10,8 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navbar from '@/components/Navbar';
+import { Github, Mail, Laptop, LogIn } from 'lucide-react';
+import { Separator } from "@/components/ui/separator";
 
 // Login form schema
 const loginSchema = z.object({
@@ -85,6 +87,25 @@ const Auth = () => {
     }, 1500);
   };
 
+  // Handle OAuth login
+  const handleOAuthLogin = (provider: string) => {
+    setIsLoading(true);
+    
+    // Simulate OAuth authentication (would connect to an OAuth provider in a real app)
+    setTimeout(() => {
+      setIsLoading(false);
+      // Store authentication state
+      localStorage.setItem("isAuthenticated", "true");
+      // Show success message
+      toast({
+        title: "Login successful",
+        description: `Logged in with ${provider}`,
+      });
+      // Redirect to chat page
+      navigate("/chat");
+    }, 1500);
+  };
+
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-background to-mental-50">
       <Navbar />
@@ -135,10 +156,53 @@ const Auth = () => {
                   />
                   
                   <Button type="submit" className="w-full bg-mental-500 hover:bg-mental-600" disabled={isLoading}>
-                    {isLoading ? "Logging in..." : "Login"}
+                    {isLoading ? "Logging in..." : "Login with Email"}
                   </Button>
                 </form>
               </Form>
+              
+              <div className="mt-6">
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <Separator className="w-full" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-3 gap-3 mt-6">
+                  <Button 
+                    variant="outline" 
+                    className="w-full" 
+                    onClick={() => handleOAuthLogin('Google')}
+                    disabled={isLoading}
+                  >
+                    <Mail className="h-4 w-4 mr-2" />
+                    Google
+                  </Button>
+                  
+                  <Button 
+                    variant="outline" 
+                    className="w-full" 
+                    onClick={() => handleOAuthLogin('Microsoft')}
+                    disabled={isLoading}
+                  >
+                    <Laptop className="h-4 w-4 mr-2" />
+                    MS
+                  </Button>
+                  
+                  <Button 
+                    variant="outline" 
+                    className="w-full" 
+                    onClick={() => handleOAuthLogin('GitHub')}
+                    disabled={isLoading}
+                  >
+                    <Github className="h-4 w-4 mr-2" />
+                    GitHub
+                  </Button>
+                </div>
+              </div>
             </TabsContent>
             
             {/* Sign Up Form */}
@@ -188,10 +252,53 @@ const Auth = () => {
                   />
                   
                   <Button type="submit" className="w-full bg-mental-500 hover:bg-mental-600" disabled={isLoading}>
-                    {isLoading ? "Creating account..." : "Sign Up"}
+                    {isLoading ? "Creating account..." : "Sign Up with Email"}
                   </Button>
                 </form>
               </Form>
+              
+              <div className="mt-6">
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <Separator className="w-full" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-3 gap-3 mt-6">
+                  <Button 
+                    variant="outline" 
+                    className="w-full" 
+                    onClick={() => handleOAuthLogin('Google')}
+                    disabled={isLoading}
+                  >
+                    <Mail className="h-4 w-4 mr-2" />
+                    Google
+                  </Button>
+                  
+                  <Button 
+                    variant="outline" 
+                    className="w-full" 
+                    onClick={() => handleOAuthLogin('Microsoft')}
+                    disabled={isLoading}
+                  >
+                    <Laptop className="h-4 w-4 mr-2" />
+                    MS
+                  </Button>
+                  
+                  <Button 
+                    variant="outline" 
+                    className="w-full" 
+                    onClick={() => handleOAuthLogin('GitHub')}
+                    disabled={isLoading}
+                  >
+                    <Github className="h-4 w-4 mr-2" />
+                    GitHub
+                  </Button>
+                </div>
+              </div>
             </TabsContent>
           </Tabs>
         </div>

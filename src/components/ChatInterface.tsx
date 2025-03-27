@@ -3,6 +3,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useChat } from '@/hooks/useChat';
 import ThoughtBubble from './ThoughtBubble';
 import { cn } from '@/lib/utils';
+import BreathingExercise from './BreathingExercise';
+import JournalPrompt from './JournalPrompt';
 
 interface ChatInterfaceProps {
   className?: string;
@@ -13,6 +15,8 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
   const { messages, sendMessage, isLoading } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [showBreathingExercise, setShowBreathingExercise] = useState(false);
+  const [showJournalPrompt, setShowJournalPrompt] = useState(false);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -20,13 +24,27 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, showBreathingExercise, showJournalPrompt]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputValue.trim() && !isLoading) {
       sendMessage(inputValue);
       setInputValue('');
+
+      // Check for keywords to show personalized recommendations
+      const lowercaseInput = inputValue.toLowerCase();
+      if (lowercaseInput.includes('stress') || lowercaseInput.includes('anxiety') || lowercaseInput.includes('breath')) {
+        setTimeout(() => {
+          setShowBreathingExercise(true);
+          setShowJournalPrompt(false);
+        }, 1500);
+      } else if (lowercaseInput.includes('reflect') || lowercaseInput.includes('journal') || lowercaseInput.includes('thought')) {
+        setTimeout(() => {
+          setShowJournalPrompt(true);
+          setShowBreathingExercise(false);
+        }, 1500);
+      }
     }
   };
 
@@ -63,6 +81,38 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
             <div className="w-2 h-2 bg-mental-400 rounded-full"></div>
             <div className="w-2 h-2 bg-mental-400 rounded-full animation-delay-200"></div>
             <div className="w-2 h-2 bg-mental-400 rounded-full animation-delay-400"></div>
+          </div>
+        )}
+
+        {showBreathingExercise && (
+          <div className="my-4">
+            <ThoughtBubble
+              message="I notice you might be feeling stressed. Try this breathing exercise to help calm your mind:"
+              isUser={false}
+              timestamp={formatTime(new Date().toISOString())}
+            />
+            <div className="mt-2">
+              <BreathingExercise 
+                className="mt-4" 
+                onComplete={() => setShowBreathingExercise(false)}
+              />
+            </div>
+          </div>
+        )}
+
+        {showJournalPrompt && (
+          <div className="my-4">
+            <ThoughtBubble
+              message="Journaling can help process your thoughts. Here's a prompt to get you started:"
+              isUser={false}
+              timestamp={formatTime(new Date().toISOString())}
+            />
+            <div className="mt-2">
+              <JournalPrompt 
+                className="mt-4" 
+                onJournalComplete={() => setShowJournalPrompt(false)}
+              />
+            </div>
           </div>
         )}
         
