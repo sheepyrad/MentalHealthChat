@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -7,6 +6,7 @@ import BreathingExercise from '@/components/BreathingExercise';
 import MoodTracker from '@/components/MoodTracker';
 import JournalPrompt from '@/components/JournalPrompt';
 import FeatureCard from '@/components/FeatureCard';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { toast } from '@/components/ui/use-toast';
 
 const Index = () => {
@@ -22,7 +22,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-b from-background to-mental-50">
+    <div className="min-h-screen w-full bg-gradient-to-b from-background to-mental-50 dark:from-gray-900 dark:to-gray-800">
       <Navbar />
 
       {/* Hero Section */}
@@ -221,7 +221,7 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-10 px-4 md:px-8 bg-white/50 border-t border-mental-100">
+      <footer className="py-10 px-4 md:px-8 bg-white/50 dark:bg-gray-800/50 border-t border-mental-100 dark:border-gray-700 relative">
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-6 md:mb-0">
@@ -231,25 +231,30 @@ const Index = () => {
                 </div>
                 <span className="font-medium text-lg">MentalHealthChat</span>
               </div>
-              <p className="text-calm-500 mt-2 text-sm">Your companion for emotional wellbeing</p>
+              <p className="text-calm-500 dark:text-calm-400 mt-2 text-sm">Your companion for emotional wellbeing</p>
             </div>
             
             <div className="flex flex-col md:flex-row md:space-x-8 space-y-4 md:space-y-0 items-center">
-              <Link to="/" className="text-calm-600 hover:text-mental-600">Home</Link>
-              <Link to="/about" className="text-calm-600 hover:text-mental-600">About</Link>
-              <a href="#chat-section" className="text-calm-600 hover:text-mental-600">Chat</a>
-              <a href="#breathing-section" className="text-calm-600 hover:text-mental-600">Breathing</a>
+              <Link to="/" className="text-calm-600 dark:text-calm-300 hover:text-mental-600 dark:hover:text-mental-400">Home</Link>
+              <Link to="/about" className="text-calm-600 dark:text-calm-300 hover:text-mental-600 dark:hover:text-mental-400">About</Link>
+              <a href="#chat-section" className="text-calm-600 dark:text-calm-300 hover:text-mental-600 dark:hover:text-mental-400">Chat</a>
+              <a href="#breathing-section" className="text-calm-600 dark:text-calm-300 hover:text-mental-600 dark:hover:text-mental-400">Breathing</a>
             </div>
           </div>
           
-          <div className="mt-8 pt-8 border-t border-mental-100 text-center">
-            <p className="text-calm-500 text-sm">
+          <div className="mt-8 pt-8 border-t border-mental-100 dark:border-gray-700 text-center">
+            <p className="text-calm-500 dark:text-calm-400 text-sm">
               &copy; {new Date().getFullYear()} MentalHealthChat. All rights reserved.
             </p>
-            <p className="text-calm-400 text-xs mt-1">
+            <p className="text-calm-400 dark:text-calm-500 text-xs mt-1">
               This is an educational project and not a substitute for professional mental health support.
             </p>
           </div>
+        </div>
+        
+        {/* Theme toggle - bottom right corner */}
+        <div className="fixed bottom-4 right-4 z-10">
+          <ThemeToggle />
         </div>
       </footer>
     </div>
