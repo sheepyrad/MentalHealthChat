@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -6,7 +7,6 @@ import BreathingExercise from '@/components/BreathingExercise';
 import MoodTracker from '@/components/MoodTracker';
 import JournalPrompt from '@/components/JournalPrompt';
 import FeatureCard from '@/components/FeatureCard';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import { toast } from '@/components/ui/use-toast';
 
 const Index = () => {
@@ -22,7 +22,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-b from-background to-mental-50 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen w-full bg-gradient-to-b from-background to-mental-50/50 dark:from-gray-900 dark:to-gray-800/50">
       <Navbar />
 
       {/* Hero Section */}
@@ -31,13 +31,13 @@ const Index = () => {
           <div className="flex flex-col lg:flex-row items-center">
             <div className="lg:w-1/2 lg:pr-12 mb-10 lg:mb-0">
               <div className="animate-slide-up opacity-0">
-                <div className="inline-block px-3 py-1 bg-mental-100 text-mental-600 rounded-full text-sm font-medium mb-4">
+                <div className="inline-block px-3 py-1 bg-mental-100 text-mental-600 dark:bg-gray-800 dark:text-mental-400 rounded-full text-sm font-medium mb-4">
                   AI-Powered Mental Wellness
                 </div>
                 <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
                   Your Companion for<br className="hidden md:block" /> Emotional Wellbeing
                 </h1>
-                <p className="text-lg text-calm-600 mb-8 max-w-xl">
+                <p className="text-lg text-calm-600 dark:text-calm-400 mb-8 max-w-xl">
                   MentalHealthChat helps you manage stress, cultivate mindfulness, and enhance your emotional wellbeing through personalized guidance and practical exercises.
                 </p>
                 <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
@@ -49,7 +49,7 @@ const Index = () => {
                   </a>
                   <Link 
                     to="/about"
-                    className="px-6 py-3 bg-white border border-mental-200 text-mental-700 rounded-full hover:bg-mental-50 transition-colors text-center"
+                    className="px-6 py-3 bg-white dark:bg-gray-800 border border-mental-200 dark:border-gray-700 text-mental-700 dark:text-mental-400 rounded-full hover:bg-mental-50 dark:hover:bg-gray-700 transition-colors text-center"
                   >
                     Learn More
                   </Link>
@@ -70,16 +70,16 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-4 md:px-8 bg-white/50">
+      <section className="py-20 px-4 md:px-8 bg-white/50 dark:bg-gray-800/20">
         <div className="container mx-auto">
           <div className="text-center mb-16 animate-slide-up opacity-0">
-            <div className="inline-block px-3 py-1 bg-mental-100 text-mental-600 rounded-full text-sm font-medium mb-4">
+            <div className="inline-block px-3 py-1 bg-mental-100 text-mental-600 dark:bg-gray-800 dark:text-mental-400 rounded-full text-sm font-medium mb-4">
               Features
             </div>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Tools for Your Mental Wellness Journey
             </h2>
-            <p className="text-lg text-calm-600 max-w-2xl mx-auto">
+            <p className="text-lg text-calm-600 dark:text-calm-400 max-w-2xl mx-auto">
               Discover a suite of carefully designed features to support your emotional wellbeing and help you develop healthy mental habits.
             </p>
           </div>
@@ -91,7 +91,7 @@ const Index = () => {
                 description="Have supportive conversations about your feelings, challenges, and goals with our empathetic AI companion."
                 icon={<span className="text-xl">💬</span>}
               >
-                <a href="#chat-section" className="text-mental-600 hover:text-mental-700 font-medium">Chat now →</a>
+                <a href="#chat-section" className="text-mental-600 dark:text-mental-400 hover:text-mental-700 dark:hover:text-mental-300 font-medium">Chat now →</a>
               </FeatureCard>
             </div>
             
@@ -101,7 +101,7 @@ const Index = () => {
                 description="Practice guided breathing techniques to reduce stress, improve focus, and promote relaxation."
                 icon={<span className="text-xl">🧘</span>}
               >
-                <a href="#breathing-section" className="text-mental-600 hover:text-mental-700 font-medium">Try an exercise →</a>
+                <a href="#breathing-section" className="text-mental-600 dark:text-mental-400 hover:text-mental-700 dark:hover:text-mental-300 font-medium">Try an exercise →</a>
               </FeatureCard>
             </div>
             
@@ -111,7 +111,7 @@ const Index = () => {
                 description="Monitor your emotional patterns over time to gain insights into your mental wellbeing journey."
                 icon={<span className="text-xl">📊</span>}
               >
-                <a href="#mood-section" className="text-mental-600 hover:text-mental-700 font-medium">Track your mood →</a>
+                <a href="#mood-section" className="text-mental-600 dark:text-mental-400 hover:text-mental-700 dark:hover:text-mental-300 font-medium">Track your mood →</a>
               </FeatureCard>
             </div>
             
@@ -121,7 +121,7 @@ const Index = () => {
                 description="Practice reflective writing with guided prompts to process emotions and gain perspective."
                 icon={<span className="text-xl">✏️</span>}
               >
-                <a href="#journal-section" className="text-mental-600 hover:text-mental-700 font-medium">Start journaling →</a>
+                <a href="#journal-section" className="text-mental-600 dark:text-mental-400 hover:text-mental-700 dark:hover:text-mental-300 font-medium">Start journaling →</a>
               </FeatureCard>
             </div>
             
@@ -131,7 +131,7 @@ const Index = () => {
                 description="Build present-moment awareness through guided mindfulness practices tailored to your needs."
                 icon={<span className="text-xl">🌿</span>}
               >
-                <p className="text-mental-500 opacity-60 text-sm">Coming soon</p>
+                <p className="text-mental-500 dark:text-mental-400 opacity-60 text-sm">Coming soon</p>
               </FeatureCard>
             </div>
             
@@ -141,7 +141,7 @@ const Index = () => {
                 description="View personalized insights about your wellbeing journey and track your improvement over time."
                 icon={<span className="text-xl">📈</span>}
               >
-                <p className="text-mental-500 opacity-60 text-sm">Coming soon</p>
+                <p className="text-mental-500 dark:text-mental-400 opacity-60 text-sm">Coming soon</p>
               </FeatureCard>
             </div>
           </div>
@@ -154,11 +154,11 @@ const Index = () => {
           {/* Chat Section */}
           <div id="chat-section" className="mb-20">
             <div className="text-center mb-12">
-              <div className="inline-block px-3 py-1 bg-mental-100 text-mental-600 rounded-full text-sm font-medium mb-4">
+              <div className="inline-block px-3 py-1 bg-mental-100 text-mental-600 dark:bg-gray-800 dark:text-mental-400 rounded-full text-sm font-medium mb-4">
                 AI Chat
               </div>
               <h2 className="text-3xl font-bold mb-4">Talk About What's On Your Mind</h2>
-              <p className="text-lg text-calm-600 max-w-2xl mx-auto">
+              <p className="text-lg text-calm-600 dark:text-calm-400 max-w-2xl mx-auto">
                 Have a supportive conversation with our AI companion about your feelings, challenges, or anything else on your mind.
               </p>
             </div>
@@ -171,11 +171,11 @@ const Index = () => {
           {/* Breathing Section */}
           <div id="breathing-section" className="mb-20">
             <div className="text-center mb-12">
-              <div className="inline-block px-3 py-1 bg-mental-100 text-mental-600 rounded-full text-sm font-medium mb-4">
+              <div className="inline-block px-3 py-1 bg-mental-100 text-mental-600 dark:bg-gray-800 dark:text-mental-400 rounded-full text-sm font-medium mb-4">
                 Breathing Exercise
               </div>
               <h2 className="text-3xl font-bold mb-4">Find Calm Through Breathing</h2>
-              <p className="text-lg text-calm-600 max-w-2xl mx-auto">
+              <p className="text-lg text-calm-600 dark:text-calm-400 max-w-2xl mx-auto">
                 Practice the 4-7-8 breathing technique to reduce stress and promote relaxation. This powerful exercise can help calm your nervous system.
               </p>
             </div>
@@ -190,11 +190,11 @@ const Index = () => {
             {/* Mood Tracking */}
             <div id="mood-section">
               <div className="text-center mb-8">
-                <div className="inline-block px-3 py-1 bg-mental-100 text-mental-600 rounded-full text-sm font-medium mb-4">
+                <div className="inline-block px-3 py-1 bg-mental-100 text-mental-600 dark:bg-gray-800 dark:text-mental-400 rounded-full text-sm font-medium mb-4">
                   Mood Tracking
                 </div>
                 <h2 className="text-2xl font-bold mb-4">Track How You Feel</h2>
-                <p className="text-calm-600 max-w-md mx-auto">
+                <p className="text-calm-600 dark:text-calm-400 max-w-md mx-auto">
                   Record your mood to gain insights into your emotional patterns over time.
                 </p>
               </div>
@@ -205,11 +205,11 @@ const Index = () => {
             {/* Journal */}
             <div id="journal-section">
               <div className="text-center mb-8">
-                <div className="inline-block px-3 py-1 bg-mental-100 text-mental-600 rounded-full text-sm font-medium mb-4">
+                <div className="inline-block px-3 py-1 bg-mental-100 text-mental-600 dark:bg-gray-800 dark:text-mental-400 rounded-full text-sm font-medium mb-4">
                   Journal
                 </div>
                 <h2 className="text-2xl font-bold mb-4">Reflect and Process</h2>
-                <p className="text-calm-600 max-w-md mx-auto">
+                <p className="text-calm-600 dark:text-calm-400 max-w-md mx-auto">
                   Use guided prompts to practice reflective writing and gain perspective on your experiences.
                 </p>
               </div>
@@ -221,7 +221,7 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-10 px-4 md:px-8 bg-white/50 dark:bg-gray-800/50 border-t border-mental-100 dark:border-gray-700 relative">
+      <footer className="py-10 px-4 md:px-8 bg-white/50 dark:bg-gray-800/20 border-t border-mental-100 dark:border-gray-700 relative">
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-6 md:mb-0">
@@ -250,11 +250,6 @@ const Index = () => {
               This is an educational project and not a substitute for professional mental health support.
             </p>
           </div>
-        </div>
-        
-        {/* Theme toggle - bottom right corner */}
-        <div className="fixed bottom-4 right-4 z-10">
-          <ThemeToggle />
         </div>
       </footer>
     </div>

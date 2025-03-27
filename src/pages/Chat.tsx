@@ -3,8 +3,9 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ChatInterface from '@/components/ChatInterface';
 import { toast } from '@/components/ui/use-toast';
-import { Calendar, Activity, BarChart, Clock, LogOut } from 'lucide-react';
+import { Calendar, Activity, BarChart, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 const Chat = () => {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ const Chat = () => {
   };
 
   return (
-    <div className="flex h-screen w-full bg-gradient-to-b from-background to-mental-50 dark:from-gray-900 dark:to-gray-800">
+    <div className="flex h-screen w-full bg-gradient-to-b from-background to-mental-50/50 dark:from-gray-900 dark:to-gray-800/50">
       {/* Main Chat Area */}
       <div className="flex-1 h-full p-4 flex flex-col">
         <div className="text-center mb-8 pt-6 flex items-center justify-between">
@@ -91,14 +92,9 @@ const Chat = () => {
         </div>
         
         <div className="mt-auto space-y-4">
-          <Button 
-            variant="ghost"
-            className="w-14 h-14 rounded-full flex flex-col items-center justify-center text-white hover:bg-mental-600 dark:hover:bg-gray-700"
-            title="Toggle Theme"
-          >
-            <Clock size={24} />
-            <span className="text-xs mt-1">Theme</span>
-          </Button>
+          <div className="w-14 h-14 rounded-full flex flex-col items-center justify-center">
+            <ThemeToggle />
+          </div>
           
           <Button 
             variant="ghost" 

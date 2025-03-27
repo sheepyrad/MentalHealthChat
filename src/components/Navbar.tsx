@@ -86,8 +86,8 @@ const NavLink: React.FC<NavLinkProps> = ({ to, active, children }) => {
       to={to}
       className={`relative py-1 transition-colors ${
         active 
-          ? 'text-mental-700 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-mental-500' 
-          : 'text-foreground hover:text-mental-600'
+          ? 'text-mental-500 dark:text-mental-400 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-mental-500 dark:after:bg-mental-400' 
+          : 'text-foreground hover:text-mental-600 dark:hover:text-mental-400'
       }`}
     >
       {children}
