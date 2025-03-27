@@ -42,7 +42,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
   };
 
   return (
-    <div className={cn("glass-card flex flex-col h-[600px]", className)}>
+    <div className={cn("glass-card flex flex-col h-full", className)}>
       <div className="px-4 py-3 border-b border-mental-100 flex items-center">
         <div className="h-2 w-2 rounded-full bg-green-500 mr-2"></div>
         <h3 className="font-medium">MentalHealthChat</h3>
