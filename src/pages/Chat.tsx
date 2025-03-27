@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ChatInterface from '@/components/ChatInterface';
 import { toast } from '@/components/ui/use-toast';
-import { Menu, MessageCircle, User, LogOut } from 'lucide-react';
+import { Calendar, Activity, BarChart, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Chat = () => {
@@ -55,14 +55,34 @@ const Chat = () => {
         </div>
         
         <div className="flex-1 flex flex-col items-center space-y-10">
-          <Button variant="ghost" className="w-14 h-14 rounded-full flex flex-col items-center justify-center text-white hover:bg-mental-600" title="Chat">
-            <MessageCircle size={24} />
+          <Button 
+            variant="ghost" 
+            className="w-14 h-14 rounded-full flex flex-col items-center justify-center text-white bg-mental-600" 
+            title="Chat"
+            onClick={() => navigate('/chat')}
+          >
+            <Calendar size={24} />
             <span className="text-xs mt-1">Chat</span>
           </Button>
           
-          <Button variant="ghost" className="w-14 h-14 rounded-full flex flex-col items-center justify-center text-white hover:bg-mental-600" title="Profile">
-            <User size={24} />
+          <Button 
+            variant="ghost" 
+            className="w-14 h-14 rounded-full flex flex-col items-center justify-center text-white hover:bg-mental-600" 
+            title="Profile"
+            onClick={() => navigate('/profile')}
+          >
+            <Activity size={24} />
             <span className="text-xs mt-1">Profile</span>
+          </Button>
+          
+          <Button 
+            variant="ghost" 
+            className="w-14 h-14 rounded-full flex flex-col items-center justify-center text-white hover:bg-mental-600" 
+            title="Resources"
+            onClick={() => navigate('/resources')}
+          >
+            <BarChart size={24} />
+            <span className="text-xs mt-1">Learn</span>
           </Button>
         </div>
         
@@ -72,7 +92,7 @@ const Chat = () => {
           title="Logout"
           onClick={handleLogout}
         >
-          <LogOut size={24} />
+          <Clock size={24} />
           <span className="text-xs mt-1">Logout</span>
         </Button>
       </div>
