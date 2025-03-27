@@ -17,6 +17,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [showBreathingExercise, setShowBreathingExercise] = useState(false);
   const [showJournalPrompt, setShowJournalPrompt] = useState(false);
+  const [lastMessageIndex, setLastMessageIndex] = useState(-1);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -25,6 +26,13 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
   useEffect(() => {
     scrollToBottom();
   }, [messages, showBreathingExercise, showJournalPrompt]);
+
+  useEffect(() => {
+    // Update the last message index when new messages arrive
+    if (messages.length > 0 && messages.length - 1 > lastMessageIndex) {
+      setLastMessageIndex(messages.length - 1);
+    }
+  }, [messages, lastMessageIndex]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,12 +75,13 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
       </div>
       
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map(message => (
+        {messages.map((message, index) => (
           <ThoughtBubble
             key={message.id}
             message={message.text}
             isUser={message.isUser}
             timestamp={formatTime(message.timestamp)}
+            animateText={!message.isUser && index === lastMessageIndex}
           />
         ))}
         
