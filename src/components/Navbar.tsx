@@ -1,10 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   
   useEffect(() => {
     const handleScroll = () => {
@@ -14,6 +18,22 @@ export default function Navbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    // Check authentication status
+    const authStatus = localStorage.getItem("isAuthenticated") === "true";
+    setIsAuthenticated(authStatus);
+  }, [location]);
+
+  const handleGetStarted = () => {
+    navigate("/auth");
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("isAuthenticated");
+    setIsAuthenticated(false);
+    navigate("/");
+  };
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -30,12 +50,22 @@ export default function Navbar() {
         <nav className="hidden md:flex items-center space-x-8">
           <NavLink to="/" active={location.pathname === "/"}>Home</NavLink>
           <NavLink to="/about" active={location.pathname === "/about"}>About</NavLink>
+          {isAuthenticated && (
+            <NavLink to="/chat" active={location.pathname === "/chat"}>Chat</NavLink>
+          )}
         </nav>
         
         <div className="flex items-center space-x-4">
-          <button className="px-4 py-2 rounded-full bg-mental-500 text-white hover:bg-mental-600 transition-colors">
-            Get Started
-          </button>
+          {isAuthenticated ? (
+            <Button onClick={handleLogout} variant="outline" className="flex items-center gap-2">
+              <LogOut size={18} />
+              <span>Logout</span>
+            </Button>
+          ) : (
+            <Button onClick={handleGetStarted} className="px-4 py-2 rounded-full bg-mental-500 text-white hover:bg-mental-600 transition-colors">
+              Get Started
+            </Button>
+          )}
         </div>
       </div>
     </header>
