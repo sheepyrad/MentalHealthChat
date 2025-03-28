@@ -12,7 +12,7 @@ const createOpenAIClient = () => {
   }
   
   return new OpenAI({
-    baseURL: 'https://api.deepseek.com',
+    baseURL: 'https://openrouter.ai/api/v1',
     apiKey: apiKey,
     dangerouslyAllowBrowser: true, // Allow browser usage
   });
@@ -41,7 +41,10 @@ export const callChatApi = async (
         { role: "system", content: systemPrompt },
         { role: "user", content: message }
       ],
-      model: "deepseek-chat",
+      model: "deepseek/deepseek-chat-v3-0324:free",
+      response_format: {
+        type: 'json_object'
+      }
     });
     
     return completion.choices[0].message.content || "No response from API";
