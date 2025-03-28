@@ -1,41 +1,23 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { useChat } from '@/hooks/useChat';
 import ThoughtBubble from './ThoughtBubble';
 import { cn } from '@/lib/utils';
 import BreathingExercise from './BreathingExercise';
 import JournalPrompt from './JournalPrompt';
-import { Button } from './ui/button';
-import { AlertCircle } from 'lucide-react';
-import { Alert, AlertDescription } from './ui/alert';
 
 interface ChatInterfaceProps {
   className?: string;
-  customApiFunction?: (message: string, systemPrompt: string) => Promise<string>;
-  apiKeyStatus?: 'set' | 'not-set';
-  apiProvider?: string;
 }
 
-const ChatInterface: React.FC<ChatInterfaceProps> = ({ 
-  className,
-  customApiFunction,
-  apiKeyStatus = 'not-set',
-  apiProvider = 'DeepSeek'
-}) => {
+const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
   const [inputValue, setInputValue] = useState('');
-  const { messages, sendMessage, isLoading, updateApiFunction } = useChat({
-    apiFunction: customApiFunction
-  });
+  const { messages, sendMessage, isLoading } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [showBreathingExercise, setShowBreathingExercise] = useState(false);
   const [showJournalPrompt, setShowJournalPrompt] = useState(false);
   const [lastMessageIndex, setLastMessageIndex] = useState(-1);
-
-  useEffect(() => {
-    if (customApiFunction) {
-      updateApiFunction(customApiFunction);
-    }
-  }, [customApiFunction, updateApiFunction]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -88,30 +70,11 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
       <div className="px-4 py-3 border-b border-mental-100 flex items-center justify-between">
         <div className="flex items-center">
           <div className="h-2 w-2 rounded-full bg-green-500 mr-2"></div>
-          <h3 className="font-medium">MentalHealthChat powered by {apiProvider}</h3>
+          <h3 className="font-medium">MentalHealthChat</h3>
         </div>
-        {apiKeyStatus === 'not-set' && (
-          <div className="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 rounded-full">
-            API Key Not Set
-          </div>
-        )}
-        {apiKeyStatus === 'set' && (
-          <div className="text-xs px-2 py-1 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded-full">
-            {apiProvider} API Connected
-          </div>
-        )}
       </div>
       
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {apiKeyStatus === 'not-set' && (
-          <Alert className="mb-4">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              No {apiProvider} API key set. Please add your API key for personalized responses.
-            </AlertDescription>
-          </Alert>
-        )}
-        
         {messages.map((message, index) => (
           <ThoughtBubble
             key={message.id}

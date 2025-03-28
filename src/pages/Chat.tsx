@@ -1,21 +1,17 @@
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import ChatInterface from '@/components/ChatInterface';
 import { toast } from '@/components/ui/use-toast';
-import { Calendar, Activity, BarChart, LogOut, Lock, Check, X, RefreshCcw } from 'lucide-react';
+import { Calendar, Activity, BarChart, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { callChatApi, createDeepSeekApiFunction } from '@/lib/apiClient';
 
 const Chat = () => {
   const navigate = useNavigate();
-  const [apiKey, setApiKey] = useState<string>('');
-  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
-  const [shouldClearApiKey, setShouldClearApiKey] = useState(false);
 
   // Check if user is authenticated
-  useEffect(() => {
+  React.useEffect(() => {
     const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
     
     if (!isAuthenticated) {
@@ -26,68 +22,7 @@ const Chat = () => {
       });
       navigate("/auth");
     }
-
-    // Check if API key exists in localStorage and if we shouldn't clear it
-    if (!shouldClearApiKey) {
-      const savedApiKey = localStorage.getItem("chatApiKey");
-      if (savedApiKey) {
-        setApiKey(savedApiKey);
-        toast({
-          title: "API Key Loaded",
-          description: "Your saved API key has been loaded",
-        });
-      }
-    }
-
-    // Set up beforeunload event to clear API key on refresh if option is enabled
-    const handleBeforeUnload = () => {
-      if (shouldClearApiKey) {
-        localStorage.removeItem("chatApiKey");
-      }
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, [navigate, shouldClearApiKey]);
-
-  const handleSaveApiKey = () => {
-    try {
-      if (apiKey.trim()) {
-        // Save API key to localStorage if not set to clear on refresh
-        if (!shouldClearApiKey) {
-          localStorage.setItem("chatApiKey", apiKey);
-        }
-        
-        toast({
-          title: "API Key Saved",
-          description: shouldClearApiKey 
-            ? "Your API key has been saved for this session only" 
-            : "Your API key has been successfully saved",
-          variant: "default",
-        });
-      } else {
-        // Clear API key if empty
-        localStorage.removeItem("chatApiKey");
-        setApiKey('');
-        toast({
-          title: "API Key Removed",
-          description: "Your API key has been removed",
-          variant: "default",
-        });
-      }
-      setShowApiKeyInput(false);
-    } catch (error) {
-      toast({
-        title: "Error Saving API Key",
-        description: "There was a problem saving your API key",
-        variant: "destructive",
-      });
-      console.error("Error saving API key:", error);
-    }
-  };
+  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem("isAuthenticated");
@@ -98,94 +33,19 @@ const Chat = () => {
     navigate("/");
   };
 
-  const toggleClearApiKey = () => {
-    setShouldClearApiKey(!shouldClearApiKey);
-    toast({
-      title: shouldClearApiKey ? "API Key Persistence Enabled" : "API Key Clearing Enabled",
-      description: shouldClearApiKey 
-        ? "Your API key will be saved between sessions" 
-        : "Your API key will be cleared when you refresh the page",
-    });
-  };
-
-  // Create the API function based on whether we have an API key
-  const customApiFunction = apiKey 
-    ? createDeepSeekApiFunction(apiKey) 
-    : callChatApi;
-
   return (
     <div className="flex h-screen w-full bg-gradient-to-b from-background to-mental-50/50 dark:from-gray-900 dark:to-gray-800/50">
       {/* Main Chat Area */}
       <div className="flex-1 h-full p-4 flex flex-col">
-        <div className="text-center mb-8 pt-6 flex items-center justify-between">
-          <div className="flex-1"></div>
-          <div className="flex-1">
-            <h1 className="text-3xl font-bold mb-2">Your Mental Wellness Companion</h1>
-            <p className="text-lg text-calm-600 dark:text-calm-400">
-              We're here to listen and provide personalized support for your mental wellbeing.
-            </p>
-          </div>
-          <div className="flex-1 flex justify-end">
-            {showApiKeyInput ? (
-              <div className="flex items-center space-x-2">
-                <input
-                  type="password"
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                  placeholder="Enter DeepSeek API Key"
-                  className="px-3 py-2 border rounded-md text-sm"
-                />
-                <Button 
-                  size="sm" 
-                  onClick={handleSaveApiKey}
-                  className="flex items-center gap-1"
-                >
-                  <Check size={16} />
-                  Save
-                </Button>
-                <Button 
-                  size="sm" 
-                  variant="outline" 
-                  onClick={() => setShowApiKeyInput(false)}
-                  className="flex items-center gap-1"
-                >
-                  <X size={16} />
-                  Cancel
-                </Button>
-              </div>
-            ) : (
-              <div className="flex items-center space-x-2">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => setShowApiKeyInput(true)}
-                  className="flex items-center gap-2"
-                >
-                  <Lock size={16} />
-                  {apiKey ? "Change API Key" : "Set API Key"}
-                </Button>
-                <Button
-                  variant={shouldClearApiKey ? "default" : "outline"}
-                  size="sm"
-                  onClick={toggleClearApiKey}
-                  className="flex items-center gap-2"
-                  title={shouldClearApiKey ? "API key will be cleared on refresh" : "API key will be saved between sessions"}
-                >
-                  <RefreshCcw size={16} />
-                  {shouldClearApiKey ? "Clear on Refresh" : "Save Between Sessions"}
-                </Button>
-              </div>
-            )}
-          </div>
+        <div className="text-center mb-8 pt-6">
+          <h1 className="text-3xl font-bold mb-2">Your Mental Wellness Companion</h1>
+          <p className="text-lg text-calm-600 dark:text-calm-400">
+            We're here to listen and provide personalized support for your mental wellbeing.
+          </p>
         </div>
         
         <div className="flex-1 flex items-center justify-center">
-          <ChatInterface 
-            className="w-full h-full max-w-4xl mx-auto" 
-            customApiFunction={apiKey ? customApiFunction : undefined}
-            apiKeyStatus={apiKey ? "set" : "not-set"}
-            apiProvider="DeepSeek"
-          />
+          <ChatInterface className="w-full h-full max-w-4xl mx-auto" />
         </div>
       </div>
       
