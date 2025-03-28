@@ -5,6 +5,7 @@ import ThoughtBubble from './ThoughtBubble';
 import { cn } from '@/lib/utils';
 import BreathingExercise from './BreathingExercise';
 import JournalPrompt from './JournalPrompt';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface ChatInterfaceProps {
   className?: string;
@@ -74,59 +75,61 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
         </div>
       </div>
       
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((message, index) => (
-          <ThoughtBubble
-            key={message.id}
-            message={message.text}
-            isUser={message.isUser}
-            timestamp={formatTime(message.timestamp)}
-            animateText={!message.isUser && index === lastMessageIndex}
-          />
-        ))}
-        
-        {isLoading && (
-          <div className="flex items-center space-x-2 ml-2 animate-pulse opacity-70">
-            <div className="w-2 h-2 bg-mental-400 rounded-full"></div>
-            <div className="w-2 h-2 bg-mental-400 rounded-full animation-delay-200"></div>
-            <div className="w-2 h-2 bg-mental-400 rounded-full animation-delay-400"></div>
-          </div>
-        )}
-
-        {showBreathingExercise && (
-          <div className="my-4">
+      <ScrollArea className="flex-1 p-4">
+        <div className="space-y-4">
+          {messages.map((message, index) => (
             <ThoughtBubble
-              message="I notice you might be feeling stressed. Try this breathing exercise to help calm your mind:"
-              isUser={false}
-              timestamp={formatTime(new Date().toISOString())}
+              key={message.id}
+              message={message.text}
+              isUser={message.isUser}
+              timestamp={formatTime(message.timestamp)}
+              animateText={!message.isUser && index === lastMessageIndex}
             />
-            <div className="mt-2">
-              <BreathingExercise 
-                className="mt-4" 
-                onComplete={() => setShowBreathingExercise(false)}
-              />
+          ))}
+          
+          {isLoading && (
+            <div className="flex items-center space-x-2 ml-2 animate-pulse opacity-70">
+              <div className="w-2 h-2 bg-mental-400 rounded-full"></div>
+              <div className="w-2 h-2 bg-mental-400 rounded-full animation-delay-200"></div>
+              <div className="w-2 h-2 bg-mental-400 rounded-full animation-delay-400"></div>
             </div>
-          </div>
-        )}
+          )}
 
-        {showJournalPrompt && (
-          <div className="my-4">
-            <ThoughtBubble
-              message="Journaling can help process your thoughts. Here's a prompt to get you started:"
-              isUser={false}
-              timestamp={formatTime(new Date().toISOString())}
-            />
-            <div className="mt-2">
-              <JournalPrompt 
-                className="mt-4" 
-                onJournalComplete={() => setShowJournalPrompt(false)}
+          {showBreathingExercise && (
+            <div className="my-4">
+              <ThoughtBubble
+                message="I notice you might be feeling stressed. Try this breathing exercise to help calm your mind:"
+                isUser={false}
+                timestamp={formatTime(new Date().toISOString())}
               />
+              <div className="mt-2">
+                <BreathingExercise 
+                  className="mt-4" 
+                  onComplete={() => setShowBreathingExercise(false)}
+                />
+              </div>
             </div>
-          </div>
-        )}
-        
-        <div ref={messagesEndRef} />
-      </div>
+          )}
+
+          {showJournalPrompt && (
+            <div className="my-4">
+              <ThoughtBubble
+                message="Journaling can help process your thoughts. Here's a prompt to get you started:"
+                isUser={false}
+                timestamp={formatTime(new Date().toISOString())}
+              />
+              <div className="mt-2">
+                <JournalPrompt 
+                  className="mt-4" 
+                  onJournalComplete={() => setShowJournalPrompt(false)}
+                />
+              </div>
+            </div>
+          )}
+          
+          <div ref={messagesEndRef} />
+        </div>
+      </ScrollArea>
       
       <form onSubmit={handleSubmit} className="p-3 border-t border-mental-100">
         <div className="flex items-center">

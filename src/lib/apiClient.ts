@@ -36,19 +36,34 @@ export const callChatApi = async (
     
     console.log("Calling DeepSeek API with:", { message, systemPrompt });
     
-    const completion = await openaiClient.chat.completions.create({
+    const response = await openaiClient.chat.completions.create({
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: message }
       ],
       model: "deepseek/deepseek-chat-v3-0324:free",
-      stream: true,
-      response_format: {
-        type: 'json_object'
-      }
+      response_format: { type: 'json_object' }
     });
     
-    return completion.choices[0].message.content || "No response from API";
+    const content = response.choices[0].message.content;
+    
+    // Parse JSON response if it's valid JSON
+    try {
+      if (content) {
+        // Check if it's a valid JSON string
+        const jsonResponse = JSON.parse(content);
+        // If there's a 'response' field, use that, otherwise return the whole JSON as string
+        if (jsonResponse.response) {
+          return jsonResponse.response;
+        }
+        return content;
+      }
+      return "No content returned from API";
+    } catch (e) {
+      // If it's not valid JSON, return as-is
+      console.log("Response is not valid JSON, returning as is", content);
+      return content || "No content returned from API";
+    }
     
   } catch (error) {
     console.error("API call failed:", error);
