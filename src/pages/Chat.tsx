@@ -3,15 +3,16 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ChatInterface from '@/components/ChatInterface';
 import { toast } from '@/components/ui/use-toast';
-import { Calendar, Activity, BarChart, LogOut, Lock, Check, X } from 'lucide-react';
+import { Calendar, Activity, BarChart, LogOut, Lock, Check, X, RefreshCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { callChatApi, createOpenAIApiFunction } from '@/lib/apiClient';
+import { callChatApi, createDeepSeekApiFunction } from '@/lib/apiClient';
 
 const Chat = () => {
   const navigate = useNavigate();
   const [apiKey, setApiKey] = useState<string>('');
   const [showApiKeyInput, setShowApiKeyInput] = useState(false);
+  const [shouldClearApiKey, setShouldClearApiKey] = useState(false);
 
   // Check if user is authenticated
   useEffect(() => {
@@ -26,21 +27,45 @@ const Chat = () => {
       navigate("/auth");
     }
 
-    // Check if API key exists in localStorage
-    const savedApiKey = localStorage.getItem("chatApiKey");
-    if (savedApiKey) {
-      setApiKey(savedApiKey);
+    // Check if API key exists in localStorage and if we shouldn't clear it
+    if (!shouldClearApiKey) {
+      const savedApiKey = localStorage.getItem("chatApiKey");
+      if (savedApiKey) {
+        setApiKey(savedApiKey);
+        toast({
+          title: "API Key Loaded",
+          description: "Your saved API key has been loaded",
+        });
+      }
     }
-  }, [navigate]);
+
+    // Set up beforeunload event to clear API key on refresh if option is enabled
+    const handleBeforeUnload = () => {
+      if (shouldClearApiKey) {
+        localStorage.removeItem("chatApiKey");
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [navigate, shouldClearApiKey]);
 
   const handleSaveApiKey = () => {
     try {
       if (apiKey.trim()) {
-        // Save API key to localStorage
-        localStorage.setItem("chatApiKey", apiKey);
+        // Save API key to localStorage if not set to clear on refresh
+        if (!shouldClearApiKey) {
+          localStorage.setItem("chatApiKey", apiKey);
+        }
+        
         toast({
           title: "API Key Saved",
-          description: "Your API key has been successfully saved",
+          description: shouldClearApiKey 
+            ? "Your API key has been saved for this session only" 
+            : "Your API key has been successfully saved",
           variant: "default",
         });
       } else {
@@ -73,9 +98,19 @@ const Chat = () => {
     navigate("/");
   };
 
-  // Example of creating a custom API function (you would replace this with your real implementation)
+  const toggleClearApiKey = () => {
+    setShouldClearApiKey(!shouldClearApiKey);
+    toast({
+      title: shouldClearApiKey ? "API Key Persistence Enabled" : "API Key Clearing Enabled",
+      description: shouldClearApiKey 
+        ? "Your API key will be saved between sessions" 
+        : "Your API key will be cleared when you refresh the page",
+    });
+  };
+
+  // Create the API function based on whether we have an API key
   const customApiFunction = apiKey 
-    ? createOpenAIApiFunction(apiKey) 
+    ? createDeepSeekApiFunction(apiKey) 
     : callChatApi;
 
   return (
@@ -97,7 +132,7 @@ const Chat = () => {
                   type="password"
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
-                  placeholder="Enter API Key"
+                  placeholder="Enter DeepSeek API Key"
                   className="px-3 py-2 border rounded-md text-sm"
                 />
                 <Button 
@@ -119,15 +154,27 @@ const Chat = () => {
                 </Button>
               </div>
             ) : (
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => setShowApiKeyInput(true)}
-                className="flex items-center gap-2"
-              >
-                <Lock size={16} />
-                {apiKey ? "Change API Key" : "Set API Key"}
-              </Button>
+              <div className="flex items-center space-x-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => setShowApiKeyInput(true)}
+                  className="flex items-center gap-2"
+                >
+                  <Lock size={16} />
+                  {apiKey ? "Change API Key" : "Set API Key"}
+                </Button>
+                <Button
+                  variant={shouldClearApiKey ? "default" : "outline"}
+                  size="sm"
+                  onClick={toggleClearApiKey}
+                  className="flex items-center gap-2"
+                  title={shouldClearApiKey ? "API key will be cleared on refresh" : "API key will be saved between sessions"}
+                >
+                  <RefreshCcw size={16} />
+                  {shouldClearApiKey ? "Clear on Refresh" : "Save Between Sessions"}
+                </Button>
+              </div>
             )}
           </div>
         </div>
@@ -136,6 +183,8 @@ const Chat = () => {
           <ChatInterface 
             className="w-full h-full max-w-4xl mx-auto" 
             customApiFunction={apiKey ? customApiFunction : undefined}
+            apiKeyStatus={apiKey ? "set" : "not-set"}
+            apiProvider="DeepSeek"
           />
         </div>
       </div>
@@ -199,4 +248,3 @@ const Chat = () => {
 };
 
 export default Chat;
-
