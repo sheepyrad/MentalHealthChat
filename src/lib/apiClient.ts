@@ -42,6 +42,7 @@ export const callChatApi = async (
         { role: "user", content: message }
       ],
       model: "deepseek/deepseek-chat-v3-0324:free",
+      stream: true,
       response_format: {
         type: 'json_object'
       }
