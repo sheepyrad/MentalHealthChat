@@ -14,6 +14,7 @@ const createOpenAIClient = () => {
   return new OpenAI({
     baseURL: 'https://api.deepseek.com',
     apiKey: apiKey,
+    dangerouslyAllowBrowser: true, // Allow browser usage
   });
 };
 
