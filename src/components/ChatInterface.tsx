@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { useChat } from '@/hooks/useChat';
 import ThoughtBubble from './ThoughtBubble';
@@ -74,7 +75,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
         </div>
       </div>
       
-      <ScrollArea className="flex-1 overflow-hidden">
+      <ScrollArea className="flex-1 overflow-auto">
         <div className="p-4 space-y-4">
           {messages.map((message, index) => (
             <ThoughtBubble

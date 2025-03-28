@@ -34,9 +34,9 @@ const Chat = () => {
   };
 
   return (
-    <div className="flex h-screen w-full bg-gradient-to-b from-background to-mental-50/50 dark:from-gray-900 dark:to-gray-800/50">
+    <div className="flex h-screen w-full bg-gradient-to-b from-background to-mental-50/50 dark:from-gray-900 dark:to-gray-800/50 overflow-hidden">
       {/* Main Chat Area */}
-      <div className="flex-1 h-full p-4 flex flex-col">
+      <div className="flex-1 h-full p-4 flex flex-col overflow-hidden">
         <div className="text-center mb-8 pt-6">
           <h1 className="text-3xl font-bold mb-2">Your Mental Wellness Companion</h1>
           <p className="text-lg text-calm-600 dark:text-calm-400">
@@ -44,7 +44,7 @@ const Chat = () => {
           </p>
         </div>
         
-        <div className="flex-1 flex items-center justify-center">
+        <div className="flex-1 flex items-center justify-center overflow-hidden">
           <ChatInterface className="w-full h-full max-w-4xl mx-auto" />
         </div>
       </div>
