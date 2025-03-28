@@ -3,7 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import ChatInterface from '@/components/ChatInterface';
 import { toast } from '@/components/ui/use-toast';
-import { Calendar, Activity, BarChart, LogOut } from 'lucide-react';
+import { Calendar, Activity, BarChart, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
@@ -58,11 +58,21 @@ const Chat = () => {
         <div className="flex-1 flex flex-col items-center space-y-10">
           <Button 
             variant="ghost" 
+            className="w-14 h-14 rounded-full flex flex-col items-center justify-center text-white hover:bg-mental-600 dark:hover:bg-gray-700" 
+            title="Dashboard"
+            onClick={() => navigate('/dashboard')}
+          >
+            <Calendar size={24} />
+            <span className="text-xs mt-1">Home</span>
+          </Button>
+          
+          <Button 
+            variant="ghost" 
             className="w-14 h-14 rounded-full flex flex-col items-center justify-center text-white bg-mental-600 dark:bg-gray-700" 
             title="Chat"
             onClick={() => navigate('/chat')}
           >
-            <Calendar size={24} />
+            <MessageCircle size={24} />
             <span className="text-xs mt-1">Chat</span>
           </Button>
           
@@ -98,7 +108,11 @@ const Chat = () => {
             title="Logout"
             onClick={handleLogout}
           >
-            <LogOut size={24} />
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-log-out">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
             <span className="text-xs mt-1">Logout</span>
           </Button>
         </div>

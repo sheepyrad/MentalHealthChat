@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -63,8 +62,8 @@ const Auth = () => {
         title: "Login successful",
         description: "Welcome back to MentalHealthChat",
       });
-      // Redirect to chat page
-      navigate("/chat");
+      // Redirect to dashboard page
+      navigate("/dashboard");
     }, 1500);
   };
 
@@ -82,8 +81,8 @@ const Auth = () => {
         title: "Account created",
         description: "Welcome to MentalHealthChat",
       });
-      // Redirect to chat page
-      navigate("/chat");
+      // Redirect to dashboard page
+      navigate("/dashboard");
     }, 1500);
   };
 
@@ -101,8 +100,8 @@ const Auth = () => {
         title: "Login successful",
         description: `Logged in with ${provider}`,
       });
-      // Redirect to chat page
-      navigate("/chat");
+      // Redirect to dashboard page
+      navigate("/dashboard");
     }, 1500);
   };
 
