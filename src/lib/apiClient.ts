@@ -12,7 +12,7 @@ const createOpenAIClient = () => {
   }
   
   return new OpenAI({
-    baseURL: 'https://openrouter.ai/api/v1',
+    baseURL: 'https://api.deepseek.com',
     apiKey: apiKey,
     dangerouslyAllowBrowser: true, // Allow browser usage
   });
@@ -31,7 +31,7 @@ export const callChatApi = async (
     if (!openaiClient) {
       // Fallback to default mock response if no API key
       await new Promise(resolve => setTimeout(resolve, 1000));
-      return `This is a placeholder response. Please set a DeepSeek API key in your .env file to get real responses. You said: "${message}"`;
+      return `This is a placeholder response. Please set a DeepSeek API key in your .env.local file to get real responses. You said: "${message}"`;
     }
     
     console.log("Calling DeepSeek API with:", { message, systemPrompt });
@@ -41,7 +41,7 @@ export const callChatApi = async (
         { role: "system", content: systemPrompt },
         { role: "user", content: message }
       ],
-      model: "deepseek/deepseek-chat-v3-0324:free",
+      model: "deepseek-chat",
     });
     
     return completion.choices[0].message.content || "No response from API";

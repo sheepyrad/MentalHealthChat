@@ -37,14 +37,18 @@ export const useChat = (options: ChatOptions = {}) => {
   
   const [isLoading, setIsLoading] = useState(false);
   const [systemPrompt, setSystemPrompt] = useState(options.systemPrompt || defaultSystemPrompt);
+  
+  // Initialize apiFunction with a default function to prevent "not a function" errors
   const [apiFunction, setApiFunction] = useState<(message: string, systemPrompt: string) => Promise<string>>(
-    options.apiFunction || callChatApi
+    () => options.apiFunction || callChatApi
   );
 
   // Update API function if provided in options
   useEffect(() => {
     if (options.apiFunction) {
-      setApiFunction(() => options.apiFunction!);
+      setApiFunction(() => options.apiFunction);
+    } else {
+      setApiFunction(() => callChatApi);
     }
   }, [options.apiFunction]);
 
@@ -73,6 +77,12 @@ export const useChat = (options: ChatOptions = {}) => {
     maxRetries = 3
   ): Promise<string> => {
     try {
+      // Ensure apiFunction is callable before invoking
+      if (typeof apiFunction !== 'function') {
+        console.error('API function is not properly initialized:', apiFunction);
+        return "I'm having trouble connecting to my brain right now. Please try again in a moment.";
+      }
+      
       return await apiFunction(userMessage, systemPrompt);
     } catch (error) {
       console.error("API call error:", error);
@@ -118,7 +128,11 @@ export const useChat = (options: ChatOptions = {}) => {
 
   // Function to update the API
   const updateApiFunction = useCallback((newApiFunction: (message: string, systemPrompt: string) => Promise<string>) => {
-    setApiFunction(() => newApiFunction);
+    if (typeof newApiFunction === 'function') {
+      setApiFunction(() => newApiFunction);
+    } else {
+      console.error('Attempted to update apiFunction with a non-function value:', newApiFunction);
+    }
   }, []);
 
   return {
