@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ChatInterface from '@/components/ChatInterface';
 import { toast } from '@/components/ui/use-toast';
-import { Calendar, Activity, BarChart, LogOut, Lock } from 'lucide-react';
+import { Calendar, Activity, BarChart, LogOut, Lock, Check, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { callChatApi, createOpenAIApiFunction } from '@/lib/apiClient';
@@ -25,7 +25,44 @@ const Chat = () => {
       });
       navigate("/auth");
     }
+
+    // Check if API key exists in localStorage
+    const savedApiKey = localStorage.getItem("chatApiKey");
+    if (savedApiKey) {
+      setApiKey(savedApiKey);
+    }
   }, [navigate]);
+
+  const handleSaveApiKey = () => {
+    try {
+      if (apiKey.trim()) {
+        // Save API key to localStorage
+        localStorage.setItem("chatApiKey", apiKey);
+        toast({
+          title: "API Key Saved",
+          description: "Your API key has been successfully saved",
+          variant: "default",
+        });
+      } else {
+        // Clear API key if empty
+        localStorage.removeItem("chatApiKey");
+        setApiKey('');
+        toast({
+          title: "API Key Removed",
+          description: "Your API key has been removed",
+          variant: "default",
+        });
+      }
+      setShowApiKeyInput(false);
+    } catch (error) {
+      toast({
+        title: "Error Saving API Key",
+        description: "There was a problem saving your API key",
+        variant: "destructive",
+      });
+      console.error("Error saving API key:", error);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("isAuthenticated");
@@ -65,9 +102,20 @@ const Chat = () => {
                 />
                 <Button 
                   size="sm" 
-                  onClick={() => setShowApiKeyInput(false)}
+                  onClick={handleSaveApiKey}
+                  className="flex items-center gap-1"
                 >
+                  <Check size={16} />
                   Save
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  onClick={() => setShowApiKeyInput(false)}
+                  className="flex items-center gap-1"
+                >
+                  <X size={16} />
+                  Cancel
                 </Button>
               </div>
             ) : (
@@ -78,7 +126,7 @@ const Chat = () => {
                 className="flex items-center gap-2"
               >
                 <Lock size={16} />
-                Set API Key
+                {apiKey ? "Change API Key" : "Set API Key"}
               </Button>
             )}
           </div>
@@ -151,3 +199,4 @@ const Chat = () => {
 };
 
 export default Chat;
+
