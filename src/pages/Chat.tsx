@@ -1,14 +1,17 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ChatInterface from '@/components/ChatInterface';
 import { toast } from '@/components/ui/use-toast';
-import { Calendar, Activity, BarChart, LogOut } from 'lucide-react';
+import { Calendar, Activity, BarChart, LogOut, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { callChatApi, createOpenAIApiFunction } from '@/lib/apiClient';
 
 const Chat = () => {
   const navigate = useNavigate();
+  const [apiKey, setApiKey] = useState<string>('');
+  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
 
   // Check if user is authenticated
   useEffect(() => {
@@ -33,6 +36,11 @@ const Chat = () => {
     navigate("/");
   };
 
+  // Example of creating a custom API function (you would replace this with your real implementation)
+  const customApiFunction = apiKey 
+    ? createOpenAIApiFunction(apiKey) 
+    : callChatApi;
+
   return (
     <div className="flex h-screen w-full bg-gradient-to-b from-background to-mental-50/50 dark:from-gray-900 dark:to-gray-800/50">
       {/* Main Chat Area */}
@@ -45,11 +53,42 @@ const Chat = () => {
               We're here to listen and provide personalized support for your mental wellbeing.
             </p>
           </div>
-          <div className="flex-1"></div>
+          <div className="flex-1 flex justify-end">
+            {showApiKeyInput ? (
+              <div className="flex items-center space-x-2">
+                <input
+                  type="password"
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  placeholder="Enter API Key"
+                  className="px-3 py-2 border rounded-md text-sm"
+                />
+                <Button 
+                  size="sm" 
+                  onClick={() => setShowApiKeyInput(false)}
+                >
+                  Save
+                </Button>
+              </div>
+            ) : (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setShowApiKeyInput(true)}
+                className="flex items-center gap-2"
+              >
+                <Lock size={16} />
+                Set API Key
+              </Button>
+            )}
+          </div>
         </div>
         
         <div className="flex-1 flex items-center justify-center">
-          <ChatInterface className="w-full h-full max-w-4xl mx-auto" />
+          <ChatInterface 
+            className="w-full h-full max-w-4xl mx-auto" 
+            customApiFunction={apiKey ? customApiFunction : undefined}
+          />
         </div>
       </div>
       
