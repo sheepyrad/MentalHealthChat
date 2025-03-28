@@ -1,12 +1,11 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { toast } from '@/components/ui/use-toast';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, Activity, BarChart, MessageCircle, Bookmark, HeartPulse, Coffee, BookOpen, Pill, Clipboard } from 'lucide-react';
+import { HeartPulse, Coffee, BookOpen, Pill, Clipboard, Bookmark, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ThemeToggle } from '@/components/ThemeToggle';
+import SidebarNav from '@/components/SidebarNav';
 
 interface RoutineItem {
   id: string;
@@ -145,81 +144,8 @@ const Dashboard = () => {
         </div>
       </div>
       
-      {/* Right Sidebar Navigation */}
-      <div className="w-20 h-full bg-mental-500 dark:bg-gray-800 text-white flex flex-col items-center py-8 shadow-xl">
-        <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center mb-12">
-          <span className="text-mental-500 dark:text-gray-800 font-medium text-lg">M</span>
-        </div>
-        
-        <div className="flex-1 flex flex-col items-center space-y-10">
-          <Button 
-            variant="ghost" 
-            className="w-14 h-14 rounded-full flex flex-col items-center justify-center text-white bg-mental-600 dark:bg-gray-700" 
-            title="Dashboard"
-            onClick={() => navigate('/dashboard')}
-          >
-            <Calendar size={24} />
-            <span className="text-xs mt-1">Home</span>
-          </Button>
-          
-          <Button 
-            variant="ghost" 
-            className="w-14 h-14 rounded-full flex flex-col items-center justify-center text-white hover:bg-mental-600 dark:hover:bg-gray-700" 
-            title="Chat"
-            onClick={() => navigate('/chat')}
-          >
-            <MessageCircle size={24} />
-            <span className="text-xs mt-1">Chat</span>
-          </Button>
-          
-          <Button 
-            variant="ghost" 
-            className="w-14 h-14 rounded-full flex flex-col items-center justify-center text-white hover:bg-mental-600 dark:hover:bg-gray-700" 
-            title="Profile"
-            onClick={() => navigate('/profile')}
-          >
-            <Activity size={24} />
-            <span className="text-xs mt-1">Profile</span>
-          </Button>
-          
-          <Button 
-            variant="ghost" 
-            className="w-14 h-14 rounded-full flex flex-col items-center justify-center text-white hover:bg-mental-600 dark:hover:bg-gray-700" 
-            title="Resources"
-            onClick={() => navigate('/resources')}
-          >
-            <BarChart size={24} />
-            <span className="text-xs mt-1">Learn</span>
-          </Button>
-        </div>
-        
-        <div className="mt-auto space-y-4">
-          <div className="w-14 h-14 rounded-full flex flex-col items-center justify-center">
-            <ThemeToggle />
-          </div>
-          
-          <Button 
-            variant="ghost" 
-            className="w-14 h-14 rounded-full flex flex-col items-center justify-center text-white hover:bg-mental-600 dark:hover:bg-gray-700" 
-            title="Logout"
-            onClick={() => {
-              localStorage.removeItem("isAuthenticated");
-              toast({
-                title: "Logged out",
-                description: "You have been successfully logged out",
-              });
-              navigate("/");
-            }}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-log-out">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <polyline points="16 17 21 12 16 7" />
-              <line x1="21" y1="12" x2="9" y2="12" />
-            </svg>
-            <span className="text-xs mt-1">Logout</span>
-          </Button>
-        </div>
-      </div>
+      {/* Use the shared SidebarNav component */}
+      <SidebarNav />
     </div>
   );
 };
