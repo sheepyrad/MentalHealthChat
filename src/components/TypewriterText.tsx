@@ -1,13 +1,14 @@
-
 import React, { useState, useEffect } from 'react';
 
 interface TypewriterTextProps {
+  messageId: string;
   text: string;
   delay?: number;
-  onComplete?: () => void;
+  onComplete?: (id: string) => void;
 }
 
 const TypewriterText: React.FC<TypewriterTextProps> = ({ 
+  messageId,
   text, 
   delay = 30,
   onComplete
@@ -17,6 +18,14 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
   const [isComplete, setIsComplete] = useState(false);
 
   useEffect(() => {
+    if (!text) {
+      if (!isComplete) {
+        setIsComplete(true);
+        onComplete?.(messageId);
+      }
+      return;
+    }
+
     if (currentIndex < text.length) {
       const timeout = setTimeout(() => {
         setDisplayedText(prev => prev + text[currentIndex]);
@@ -26,11 +35,10 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
       return () => clearTimeout(timeout);
     } else if (!isComplete) {
       setIsComplete(true);
-      onComplete?.();
+      onComplete?.(messageId);
     }
-  }, [currentIndex, delay, text, isComplete, onComplete]);
+  }, [currentIndex, delay, text, isComplete, onComplete, messageId]);
 
-  // Reset when text changes
   useEffect(() => {
     setDisplayedText('');
     setCurrentIndex(0);

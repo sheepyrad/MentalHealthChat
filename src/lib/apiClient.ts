@@ -1,77 +1,105 @@
-
 import { toast } from '@/components/ui/use-toast';
-import OpenAI from "openai";
+import { z } from 'zod'; // Import Zod
+import axios, { AxiosError, AxiosResponse } from 'axios'; // Import axios
+// zodToJsonSchema is no longer needed as we don't pass a schema
+// import { zodToJsonSchema } from 'zod-to-json-schema'; // Import schema converter
 
-// Initialize OpenAI client with DeepSeek API configuration
-const createOpenAIClient = () => {
-  const apiKey = import.meta.env.VITE_DEEPSEEK_API_KEY;
-  
-  if (!apiKey) {
-    console.warn("DeepSeek API key not found. Using fallback response mode.");
-    return null;
+// Define the structure for conversation history entries (matching official UI)
+export interface Message {
+  role: 'user' | 'assistant'; // Keep role consistent
+  content: string;
+}
+
+// Define the structure for the request body matching official UI fields
+export interface LightragQueryRequest {
+  query: string;
+  conversation_history?: Message[];
+  mode?: 'naive' | 'local' | 'global' | 'hybrid' | 'mix';
+  response_type?: string; // e.g., "Multiple Paragraphs"
+  top_k?: number;
+  max_token_for_text_unit?: number;
+  max_token_for_global_context?: number;
+  max_token_for_local_context?: number;
+  history_turns?: number;
+  only_need_prompt?: boolean; // Add optional only_need_prompt field
+  // system_prompt?: string; // Removed system_prompt field
+  // Add other fields like hl_keywords, ll_keywords etc. if needed
+}
+
+// Zod schema defining the expected { response: string } structure for the response
+const LightragResponseSchema = z.object({
+  response: z.string().describe("The main text response from the RAG system.")
+});
+
+// Infer the TypeScript type from the Zod schema for the response
+export type LightragQueryResponse = z.infer<typeof LightragResponseSchema>;
+
+// JSON schema generation is no longer needed
+// const ollamaJsonSchema = zodToJsonSchema(OllamaResponseSchema, "ollamaResponseSchema");
+
+// --- Configuration --- 
+// TODO: Define backendBaseUrl appropriately, e.g., in a constants file or from env vars
+// For now, defaulting to the LightRAG default port
+const backendBaseUrl = import.meta.env.VITE_LIGHTRAG_BASE_URL || 'http://localhost:9621'; 
+
+// --- Axios Instance Setup --- 
+const axiosInstance = axios.create({
+  baseURL: backendBaseUrl,
+  headers: {
+    'Content-Type': 'application/json'
   }
-  
-  return new OpenAI({
-    baseURL: 'https://openrouter.ai/api/v1',
-    apiKey: apiKey,
-    dangerouslyAllowBrowser: true, // Allow browser usage
-  });
-};
+});
+
+// --- API Function using Axios --- 
 
 /**
- * Call the DeepSeek API using OpenAI SDK
+ * Call the local LightRAG Server native /query endpoint using Axios.
+ * Accepts a request object similar to the official WebUI's QueryRequest.
  */
-export const callChatApi = async (
-  message: string, 
-  systemPrompt: string
-): Promise<string> => {
+export const callLightragQueryApi = async (
+  request: LightragQueryRequest,
+): Promise<LightragQueryResponse> => { 
   try {
-    const openaiClient = createOpenAIClient();
-    
-    if (!openaiClient) {
-      // Fallback to default mock response if no API key
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      return `This is a placeholder response. Please set a DeepSeek API key in your .env.local file to get real responses. You said: "${message}"`;
-    }
-    
-    console.log("Calling DeepSeek API with:", { message, systemPrompt });
-    
-    const response = await openaiClient.chat.completions.create({
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: message }
-      ],
-      model: "deepseek/deepseek-chat-v3-0324:free",
-      response_format: { type: 'json_object' }
-    });
-    
-    const content = response.choices[0].message.content;
-    
-    // Parse JSON response if it's valid JSON
+    // Ensure history is at least an empty array if not provided
+    const payload = {
+        ...request,
+        conversation_history: request.conversation_history ?? []
+    };
+    console.log("Calling LightRAG Server (/query) via Axios with payload:", payload);
+
+    // Use axiosInstance to make the POST request
+    const response = await axiosInstance.post<LightragQueryResponse>('/query', payload);
+
+    // Axios automatically parses JSON response, access via response.data
+    const data = response.data; 
+    console.log("Raw LightRAG /query response (from Axios):", data);
+
+    // Validate the response structure directly using Zod
     try {
-      if (content) {
-        // Check if it's a valid JSON string
-        const jsonResponse = JSON.parse(content);
-        // If there's a 'response' field, use that, otherwise return the whole JSON as string
-        if (jsonResponse.response) {
-          return jsonResponse.response;
-        }
-        return content;
-      }
-      return "No content returned from API";
-    } catch (e) {
-      // If it's not valid JSON, return as-is
-      console.log("Response is not valid JSON, returning as is", content);
-      return content || "No content returned from API";
+      const structuredContent = LightragResponseSchema.parse(data); 
+      console.log("LightRAG /query schema-validated response received:", structuredContent);
+      return structuredContent;
+    } catch (validationError) {
+      console.error("Failed to validate LightRAG /query response:", validationError);
+      // Fallback if the structure is not { response: string }
+      // If data is already an object, stringify might not be ideal, but needed for consistency
+      return { response: typeof data === 'string' ? data : JSON.stringify(data) }; 
     }
-    
+
   } catch (error) {
-    console.error("API call failed:", error);
+    // Axios interceptor might handle some errors, but catch others here
+    const errorMessageStr = error instanceof Error ? error.message : String(error);
+    console.error("LightRAG API (/query) call failed (Axios):", errorMessageStr);
     toast({
-      title: "API Error",
-      description: "Failed to get a response from the DeepSeek API",
+      title: "LightRAG API Error",
+      description: `Failed to get response from the LightRAG /query endpoint. Details: ${errorMessageStr}`,
       variant: "destructive",
     });
-    throw error;
+    // Ensure the fallback matches the expected return type
+    return { response: "Sorry, I couldn't connect to the LightRAG service or process its response correctly. Please ensure LightRAG is running and accessible." };
   }
 };
+
+// Update the alias to point to the refactored function
+// Note: The caller (useChat) will need to be updated to pass an object instead of separate arguments.
+export const callOllamaApi = callLightragQueryApi;

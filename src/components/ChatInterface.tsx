@@ -1,11 +1,13 @@
-
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useChat } from '@/hooks/useChat';
-import ThoughtBubble from './ThoughtBubble';
+import { useChatContext } from '@/context/ChatContext';
 import { cn } from '@/lib/utils';
+import ThoughtBubble from './ThoughtBubble';
 import BreathingExercise from './BreathingExercise';
 import JournalPrompt from './JournalPrompt';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 interface ChatInterfaceProps {
   className?: string;
@@ -13,12 +15,13 @@ interface ChatInterfaceProps {
 
 const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
   const [inputValue, setInputValue] = useState('');
-  const { messages, sendMessage, isLoading } = useChat();
+  const { sendMessage, isLoading } = useChat();
+  const { messages, animatedMessageIds } = useChatContext();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [showBreathingExercise, setShowBreathingExercise] = useState(false);
   const [showJournalPrompt, setShowJournalPrompt] = useState(false);
-  const [lastMessageIndex, setLastMessageIndex] = useState(-1);
+  const [lastMessageIndex, setLastMessageIndex] = useState(() => messages.length > 0 ? messages.length - 1 : -1);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -29,15 +32,13 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
   }, [messages, showBreathingExercise, showJournalPrompt]);
 
   useEffect(() => {
-    if (messages.length > 0 && messages.length - 1 > lastMessageIndex) {
-      setLastMessageIndex(messages.length - 1);
-    }
-  }, [messages, lastMessageIndex]);
+    setLastMessageIndex(messages.length - 1);
+  }, [messages]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputValue.trim() && !isLoading) {
-      sendMessage(inputValue);
+      const sentMessage = sendMessage(inputValue);
       setInputValue('');
 
       const lowercaseInput = inputValue.toLowerCase();
@@ -56,19 +57,26 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
   };
 
   const formatTime = (isoString: string) => {
-    const date = new Date(isoString);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    if (!isoString) return '';
+    try {
+      const date = new Date(isoString);
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } catch (error) {
+      console.error("Error formatting time:", isoString, error);
+      return 'Invalid date';
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
       handleSubmit(e);
     }
   };
 
   return (
     <div className={cn("glass-card flex flex-col h-full", className)}>
-      <div className="px-4 py-3 border-b border-mental-100 flex items-center justify-between">
+      <div className="px-4 py-3 border-b border-mental-100 dark:border-gray-700 flex items-center justify-between">
         <div className="flex items-center">
           <div className="h-2 w-2 rounded-full bg-green-500 mr-2"></div>
           <h3 className="font-medium">MentalHealthChat</h3>
@@ -80,10 +88,10 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
           {messages.map((message, index) => (
             <ThoughtBubble
               key={message.id}
+              messageId={message.id}
               message={message.text}
               isUser={message.isUser}
               timestamp={formatTime(message.timestamp)}
-              animateText={!message.isUser && index === lastMessageIndex}
             />
           ))}
           
@@ -96,8 +104,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
           )}
 
           {showBreathingExercise && (
-            <div className="my-4">
+            <div className="my-4 animate-slide-up opacity-0" style={{animationDelay: '100ms'}}>
               <ThoughtBubble
+                messageId={'breathing-intro-' + Date.now()}
                 message="I notice you might be feeling stressed. Try this breathing exercise to help calm your mind:"
                 isUser={false}
                 timestamp={formatTime(new Date().toISOString())}
@@ -112,9 +121,10 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
           )}
 
           {showJournalPrompt && (
-            <div className="my-4">
+            <div className="my-4 animate-slide-up opacity-0" style={{animationDelay: '100ms'}}>
               <ThoughtBubble
-                message="Journaling can help process your thoughts. Here's a prompt to get you started:"
+                messageId={'journal-intro-' + Date.now()}
+                message="Reflecting on your thoughts can be helpful. Here's a prompt to get you started:"
                 isUser={false}
                 timestamp={formatTime(new Date().toISOString())}
               />
@@ -130,33 +140,24 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
           <div ref={messagesEndRef} />
         </div>
       </ScrollArea>
-      
-      <form onSubmit={handleSubmit} className="p-3 border-t border-mental-100">
-        <div className="flex items-center">
-          <input
+
+      <div className="p-4 border-t border-mental-100 dark:border-gray-700">
+        <form onSubmit={handleSubmit} className="flex items-center space-x-2">
+          <Input
             ref={inputRef}
             type="text"
+            placeholder="Type your message..."
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Type your message..."
-            className="flex-1 py-2 px-3 rounded-l-full border border-mental-200 focus:outline-none focus:ring-1 focus:ring-mental-300"
             disabled={isLoading}
+            className="flex-1"
+            onKeyDown={handleKeyDown}
           />
-          <button
-            type="submit"
-            className={cn(
-              "py-2 px-4 rounded-r-full",
-              isLoading || !inputValue.trim()
-                ? "bg-calm-200 text-calm-400 cursor-not-allowed"
-                : "bg-mental-500 text-white hover:bg-mental-600"
-            )}
-            disabled={isLoading || !inputValue.trim()}
-          >
-            Send
-          </button>
-        </div>
-      </form>
+          <Button type="submit" disabled={isLoading || !inputValue.trim()}>
+            {isLoading ? 'Sending...' : 'Send'}
+          </Button>
+        </form>
+      </div>
     </div>
   );
 };
