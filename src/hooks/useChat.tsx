@@ -1,7 +1,8 @@
-
 import { useState, useEffect, useCallback } from 'react';
-import { callChatApi } from '@/lib/apiClient';
+import { useChatContext } from '@/context/ChatContext';
+import { loadContextFromDocs, streamOpenRouterResponse } from '@/lib/openRouterClient';
 
+// Keep Message interface consistent with ChatContext
 export interface Message {
   id: string;
   text: string;
@@ -9,138 +10,111 @@ export interface Message {
   timestamp: string;
 }
 
-export interface ChatOptions {
-  initialMessages?: Message[];
-  systemPrompt?: string;
-  apiFunction?: (message: string, systemPrompt: string) => Promise<string>;
-}
-
-const defaultSystemPrompt = `
-You are MentalHealthChat, an AI assistant focused on supporting mental wellbeing. 
-Your responses should be empathetic, supportive, and helpful. 
-Provide guidance on stress management, emotional wellbeing, and mindfulness.
-Suggest practical exercises when appropriate.
-If the user seems to be in crisis, gently suggest professional help.
-`;
-
-export const useChat = (options: ChatOptions = {}) => {
-  const [messages, setMessages] = useState<Message[]>(
-    options.initialMessages || [
-      {
-        id: '1',
-        text: "Hi there! I'm MentalHealthChat, your supportive companion. How are you feeling today?",
-        isUser: false,
-        timestamp: new Date().toISOString()
-      }
-    ]
-  );
+export const useChat = () => {
+  // Get state and functions from context
+  const { messages, addMessage, appendAssistantChunk, clearMessages } = useChatContext();
   
   const [isLoading, setIsLoading] = useState(false);
-  const [systemPrompt, setSystemPrompt] = useState(options.systemPrompt || defaultSystemPrompt);
-  
-  // Initialize apiFunction with a default function to prevent "not a function" errors
-  const [apiFunction, setApiFunction] = useState<(message: string, systemPrompt: string) => Promise<string>>(
-    () => options.apiFunction || callChatApi
-  );
+  const [docContext, setDocContext] = useState<string | null>(null);
+  const [contextLoading, setContextLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Update API function if provided in options
+  // Load document context on mount using the imported function
   useEffect(() => {
-    if (options.apiFunction) {
-      setApiFunction(() => options.apiFunction);
-    } else {
-      setApiFunction(() => callChatApi);
-    }
-  }, [options.apiFunction]);
-
-  // Update system prompt if provided in options
-  useEffect(() => {
-    if (options.systemPrompt) {
-      setSystemPrompt(options.systemPrompt);
-    }
-  }, [options.systemPrompt]);
-
-  const addMessage = useCallback((text: string, isUser: boolean) => {
-    const newMessage: Message = {
-      id: Date.now().toString(),
-      text,
-      isUser,
-      timestamp: new Date().toISOString()
+    const loadContext = async () => {
+      setContextLoading(true);
+      setError(null);
+      try {
+        const context = await loadContextFromDocs();
+        // Check if the context loader returned an error message
+        if (context.startsWith('Error loading context:')) {
+            throw new Error(context); // Throw to handle in catch block
+        }
+        setDocContext(context);
+      } catch (err) { // Catch potential errors from loadContextFromDocs 
+        const errorMsg = err instanceof Error ? err.message : String(err);
+        console.error("Failed to load doc context in hook:", errorMsg);
+        setError(`Failed to load background information: ${errorMsg}`);
+        // Optionally set docContext to null or a specific error indicator
+        setDocContext(null); 
+      } finally {
+        setContextLoading(false);
+      }
     };
-    
-    setMessages(prev => [...prev, newMessage]);
-    return newMessage;
+    loadContext();
   }, []);
-
-  const callApiWithRetry = useCallback(async (
-    userMessage: string, 
-    retryCount = 0, 
-    maxRetries = 3
-  ): Promise<string> => {
-    try {
-      // Ensure apiFunction is callable before invoking
-      if (typeof apiFunction !== 'function') {
-        console.error('API function is not properly initialized:', apiFunction);
-        return "I'm having trouble connecting to my brain right now. Please try again in a moment.";
-      }
-      
-      return await apiFunction(userMessage, systemPrompt);
-    } catch (error) {
-      console.error("API call error:", error);
-      if (retryCount < maxRetries) {
-        console.log(`Retrying API call (${retryCount + 1}/${maxRetries})...`);
-        // Exponential backoff: 1s, 2s, 4s...
-        await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, retryCount)));
-        return callApiWithRetry(userMessage, retryCount + 1, maxRetries);
-      }
-      throw error;
-    }
-  }, [apiFunction, systemPrompt]);
 
   const sendMessage = useCallback(async (text: string) => {
-    if (!text.trim()) return;
+    if (!text.trim()) return; // Don't send empty messages
     
-    const userMessage = addMessage(text, true);
+    if (contextLoading) {
+      console.warn("Context is still loading. Please wait.");
+      // Optionally provide feedback to user, e.g., via toast or message
+      appendAssistantChunk("\n*(Still loading background information...)*\n");
+      return;
+    }
+    if (docContext === null) {
+      console.error("Document context failed to load or wasn't set properly. Cannot send message.");
+      appendAssistantChunk("\n*(Error: Background information missing. Cannot send message.)*\n");
+      setError("Background information failed to load. Please try refreshing.");
+      return;
+    }
+
+    // Add user message optimistically to the UI
+    addMessage(text, true);
     setIsLoading(true);
-    
-    try {
-      const response = await callApiWithRetry(text);
-      addMessage(response, false);
-    } catch (error) {
-      console.error("Failed to get response:", error);
-      addMessage("I'm having trouble responding right now. Please try again in a moment.", false);
-    } finally {
+    setError(null);
+
+    const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY;
+    if (!apiKey) {
+      console.error("OpenRouter API key is not set in .env file (VITE_OPENROUTER_API_KEY).");
+      appendAssistantChunk("\n*(Configuration error: Missing API Key. Cannot connect.)*\n");
+      setError("Configuration error: Missing API Key.")
       setIsLoading(false);
+      return;
+    }
+
+    // Prepare the message history for the API call
+    const currentMessagesForApi = [ 
+        ...messages.map(msg => ({
+            role: msg.isUser ? 'user' : 'assistant' as 'user' | 'assistant',
+            content: msg.text,
+        })), 
+        { role: 'user' as const, content: text } 
+    ];
+
+    try {
+        await streamOpenRouterResponse(
+            apiKey, 
+            currentMessagesForApi as Array<{ role: 'system' | 'user' | 'assistant', content: string }>, 
+            docContext!, 
+            {
+                onChunk: appendAssistantChunk,
+                onError: (err) => {
+                    console.error("Streaming error reported by client:", err);
+                    setError(`Sorry, I encountered an issue: ${err.message}`);
+                    appendAssistantChunk(`\n*(Error: ${err.message})*\n`);
+                }
+            }
+        );
+    } catch (err) { // Catch unexpected errors from the client function itself
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      console.error("Unexpected error calling streamOpenRouterResponse:", errorMsg);
+      setError(`An unexpected error occurred: ${errorMsg}`);
+      appendAssistantChunk(`\n*(Unexpected error occurred during request.)*\n`);
+    } finally {
+        // Always ensure loading state is reset
+        setIsLoading(false); 
     }
     
-    return userMessage;
-  }, [addMessage, callApiWithRetry]);
-
-  const clearMessages = useCallback(() => {
-    setMessages([
-      {
-        id: '1',
-        text: "Hi there! I'm MentalHealthChat, your supportive companion. How are you feeling today?",
-        isUser: false,
-        timestamp: new Date().toISOString()
-      }
-    ]);
-  }, []);
-
-  // Function to update the API
-  const updateApiFunction = useCallback((newApiFunction: (message: string, systemPrompt: string) => Promise<string>) => {
-    if (typeof newApiFunction === 'function') {
-      setApiFunction(() => newApiFunction);
-    } else {
-      console.error('Attempted to update apiFunction with a non-function value:', newApiFunction);
-    }
-  }, []);
+  }, [addMessage, appendAssistantChunk, messages, docContext, contextLoading]); // Dependencies updated
 
   return {
-    messages,
+    messages, // from context
     sendMessage,
-    clearMessages,
-    isLoading,
-    updateApiFunction,
-    setSystemPrompt
+    clearMessages, // from context
+    isLoading, // local state
+    contextLoading, // local state 
+    error, // local state
   };
 };

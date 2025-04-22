@@ -1,9 +1,7 @@
-
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import ChatInterface from '@/components/ChatInterface';
-import BreathingExercise from '@/components/BreathingExercise';
 import MoodTracker from '@/components/MoodTracker';
 import JournalPrompt from '@/components/JournalPrompt';
 import FeatureCard from '@/components/FeatureCard';
@@ -95,16 +93,6 @@ const Index = () => {
               </FeatureCard>
             </div>
             
-            <div className="animate-slide-up opacity-0" style={{ animationDelay: '200ms' }}>
-              <FeatureCard
-                title="Breathing Exercises"
-                description="Practice guided breathing techniques to reduce stress, improve focus, and promote relaxation."
-                icon={<span className="text-xl">🧘</span>}
-              >
-                <a href="#breathing-section" className="text-mental-600 dark:text-mental-400 hover:text-mental-700 dark:hover:text-mental-300 font-medium">Try an exercise →</a>
-              </FeatureCard>
-            </div>
-            
             <div className="animate-slide-up opacity-0" style={{ animationDelay: '300ms' }}>
               <FeatureCard
                 title="Mood Tracking"
@@ -168,23 +156,6 @@ const Index = () => {
             </div>
           </div>
           
-          {/* Breathing Section */}
-          <div id="breathing-section" className="mb-20">
-            <div className="text-center mb-12">
-              <div className="inline-block px-3 py-1 bg-mental-100 text-mental-600 dark:bg-gray-800 dark:text-mental-400 rounded-full text-sm font-medium mb-4">
-                Breathing Exercise
-              </div>
-              <h2 className="text-3xl font-bold mb-4">Find Calm Through Breathing</h2>
-              <p className="text-lg text-calm-600 dark:text-calm-400 max-w-2xl mx-auto">
-                Practice the 4-7-8 breathing technique to reduce stress and promote relaxation. This powerful exercise can help calm your nervous system.
-              </p>
-            </div>
-            
-            <div className="max-w-md mx-auto">
-              <BreathingExercise />
-            </div>
-          </div>
-          
           {/* Two Column Layout for Mood and Journal */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Mood Tracking */}
@@ -238,7 +209,6 @@ const Index = () => {
               <Link to="/" className="text-calm-600 dark:text-calm-300 hover:text-mental-600 dark:hover:text-mental-400">Home</Link>
               <Link to="/about" className="text-calm-600 dark:text-calm-300 hover:text-mental-600 dark:hover:text-mental-400">About</Link>
               <a href="#chat-section" className="text-calm-600 dark:text-calm-300 hover:text-mental-600 dark:hover:text-mental-400">Chat</a>
-              <a href="#breathing-section" className="text-calm-600 dark:text-calm-300 hover:text-mental-600 dark:hover:text-mental-400">Breathing</a>
             </div>
           </div>
           

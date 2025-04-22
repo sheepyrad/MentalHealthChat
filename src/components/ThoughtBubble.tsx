@@ -1,25 +1,22 @@
-
-import React, { useState } from 'react';
+import React from 'react';
+import ReactMarkdown from 'react-markdown';
 import { cn } from '@/lib/utils';
-import TypewriterText from './TypewriterText';
 
 interface ThoughtBubbleProps {
+  messageId: string;
   message: string;
   isUser: boolean;
   timestamp?: string;
   className?: string;
-  animateText?: boolean;
 }
 
 const ThoughtBubble: React.FC<ThoughtBubbleProps> = ({ 
+  messageId,
   message, 
   isUser, 
   timestamp,
   className,
-  animateText = false
 }) => {
-  const [isTypingComplete, setIsTypingComplete] = useState(false);
-
   return (
     <div className={cn(
       "animate-slide-up opacity-0",
@@ -27,21 +24,18 @@ const ThoughtBubble: React.FC<ThoughtBubbleProps> = ({
       className
     )}>
       <div className={cn(
-        "max-w-[85%] px-5 py-3 rounded-2xl shadow-soft",
+        "max-w-[85%] px-5 py-3 rounded-2xl shadow-soft prose prose-sm dark:prose-invert",
+        "prose-p:my-1 prose-li:my-0.5",
         isUser 
           ? "bg-mental-500 text-white rounded-tr-sm ml-auto" 
           : "glass rounded-tl-sm mr-auto"
       )}>
-        <p className="text-balance">
-          {animateText && !isUser ? (
-            <TypewriterText 
-              text={message} 
-              onComplete={() => setIsTypingComplete(true)}
-            />
-          ) : (
-            message
-          )}
-        </p>
+        <ReactMarkdown
+          components={{
+          }}
+        >
+          {message} 
+        </ReactMarkdown>
       </div>
       {timestamp && (
         <p className={cn(

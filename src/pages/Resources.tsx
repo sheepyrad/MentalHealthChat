@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/components/ui/use-toast';
-import { BookOpen, Video, Calendar, Activity, BarChart, Clock } from 'lucide-react';
+import { BookOpen, Video, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import SidebarNav from '@/components/SidebarNav';
 
 type ResourceCategory = 'all' | 'article' | 'video' | 'exercise';
 
@@ -79,7 +78,6 @@ const Resources = () => {
   const [category, setCategory] = useState<ResourceCategory>('all');
   const [filteredResources, setFilteredResources] = useState<Resource[]>(resources);
 
-  // Check if user is authenticated
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
     
@@ -93,7 +91,6 @@ const Resources = () => {
     }
   }, [navigate]);
 
-  // Filter resources when category changes
   useEffect(() => {
     if (category === 'all') {
       setFilteredResources(resources);
@@ -112,18 +109,16 @@ const Resources = () => {
   };
 
   return (
-    <div className="flex h-screen w-full bg-gradient-to-b from-background to-mental-50">
-      {/* Main Content Area */}
+    <div className="flex h-screen w-full bg-gradient-to-b from-background to-mental-50/50 dark:from-gray-900 dark:to-gray-800/50">
       <div className="flex-1 h-full p-6 overflow-y-auto">
         <div className="max-w-6xl mx-auto">
           <div className="mb-8 pt-6">
             <h1 className="text-3xl font-bold mb-2">Educational Resources</h1>
-            <p className="text-lg text-calm-600">
+            <p className="text-lg text-calm-600 dark:text-calm-400">
               Explore articles, videos, and exercises to support your mental health journey
             </p>
           </div>
           
-          {/* Category Filters */}
           <div className="flex flex-wrap gap-2 mb-8">
             <Button 
               variant={category === 'all' ? 'default' : 'outline'}
@@ -161,7 +156,6 @@ const Resources = () => {
             </Button>
           </div>
           
-          {/* Resources Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             {filteredResources.map((resource) => (
               <div key={resource.id} className="glass-card overflow-hidden flex flex-col h-full">
@@ -199,7 +193,6 @@ const Resources = () => {
             ))}
           </div>
           
-          {/* Featured Content */}
           <div className="glass-card p-6 mb-12">
             <h2 className="text-2xl font-bold mb-4">Weekly Featured Content</h2>
             <div className="flex flex-col md:flex-row">
@@ -220,61 +213,7 @@ const Resources = () => {
         </div>
       </div>
       
-      {/* Right Sidebar Navigation - Same as in Chat.tsx and Profile.tsx */}
-      <div className="w-20 h-full bg-mental-500 text-white flex flex-col items-center py-8 shadow-xl">
-        <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center mb-12">
-          <span className="text-mental-500 font-medium text-lg">M</span>
-        </div>
-        
-        <div className="flex-1 flex flex-col items-center space-y-10">
-          <Button 
-            variant="ghost" 
-            className="w-14 h-14 rounded-full flex flex-col items-center justify-center text-white hover:bg-mental-600" 
-            title="Chat"
-            onClick={() => navigate('/chat')}
-          >
-            <Calendar size={24} />
-            <span className="text-xs mt-1">Chat</span>
-          </Button>
-          
-          <Button 
-            variant="ghost" 
-            className="w-14 h-14 rounded-full flex flex-col items-center justify-center text-white hover:bg-mental-600" 
-            title="Profile"
-            onClick={() => navigate('/profile')}
-          >
-            <Activity size={24} />
-            <span className="text-xs mt-1">Profile</span>
-          </Button>
-          
-          <Button 
-            variant="ghost" 
-            className="w-14 h-14 rounded-full flex flex-col items-center justify-center text-white bg-mental-600" 
-            title="Resources"
-            onClick={() => navigate('/resources')}
-          >
-            <BarChart size={24} />
-            <span className="text-xs mt-1">Learn</span>
-          </Button>
-        </div>
-        
-        <Button 
-          variant="ghost" 
-          className="w-14 h-14 rounded-full flex flex-col items-center justify-center text-white hover:bg-mental-600 mt-auto" 
-          title="Logout"
-          onClick={() => {
-            localStorage.removeItem("isAuthenticated");
-            toast({
-              title: "Logged out",
-              description: "You have been successfully logged out",
-            });
-            navigate("/");
-          }}
-        >
-          <Clock size={24} />
-          <span className="text-xs mt-1">Logout</span>
-        </Button>
-      </div>
+      <SidebarNav />
     </div>
   );
 };
