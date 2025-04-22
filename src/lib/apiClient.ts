@@ -26,7 +26,6 @@ export interface LightragQueryRequest {
   // Add other fields like hl_keywords, ll_keywords etc. if needed
 }
 
-// Zod schema defining the expected { response: string } structure for the response
 const LightragResponseSchema = z.object({
   response: z.string().describe("The main text response from the RAG system.")
 });
@@ -34,15 +33,9 @@ const LightragResponseSchema = z.object({
 // Infer the TypeScript type from the Zod schema for the response
 export type LightragQueryResponse = z.infer<typeof LightragResponseSchema>;
 
-// JSON schema generation is no longer needed
-// const ollamaJsonSchema = zodToJsonSchema(OllamaResponseSchema, "ollamaResponseSchema");
 
-// --- Configuration --- 
-// TODO: Define backendBaseUrl appropriately, e.g., in a constants file or from env vars
-// For now, defaulting to the LightRAG default port
 const backendBaseUrl = import.meta.env.VITE_LIGHTRAG_BASE_URL || 'http://localhost:9621'; 
 
-// --- Axios Instance Setup --- 
 const axiosInstance = axios.create({
   baseURL: backendBaseUrl,
   headers: {
@@ -50,7 +43,7 @@ const axiosInstance = axios.create({
   }
 });
 
-// --- API Function using Axios --- 
+
 
 /**
  * Call the local LightRAG Server native /query endpoint using Axios.
@@ -100,6 +93,4 @@ export const callLightragQueryApi = async (
   }
 };
 
-// Update the alias to point to the refactored function
-// Note: The caller (useChat) will need to be updated to pass an object instead of separate arguments.
 export const callOllamaApi = callLightragQueryApi;
