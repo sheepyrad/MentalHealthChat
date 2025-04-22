@@ -1,4 +1,4 @@
-# StressWise Assistant
+# MentalHealthChat
 
 A web application designed to provide assistance, possibly related to stress management, featuring a chat interface.
 
@@ -31,7 +31,7 @@ This project leverages the following technologies:
 ## Project Structure
 
 ```
-stresswise-assistant/
+MentalHealthChat/
 ├── public/             # Static assets
 ├── src/                # Source files
 │   ├── components/     # Reusable UI components (including shadcn/ui)
