@@ -4,6 +4,7 @@ import { Message } from '@/hooks/useChat'; // Assuming Message type is exported 
 interface ChatContextType {
   messages: Message[];
   addMessage: (text: string, isUser: boolean) => Message;
+  appendAssistantChunk: (chunk: string) => void;
   clearMessages: () => void;
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>; // Allow direct setting if needed
   animatedMessageIds: Set<string>; // Track animated messages
@@ -15,7 +16,7 @@ const ChatContext = createContext<ChatContextType | undefined>(undefined);
 export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const initialMessage: Message = useMemo(() => ({
     id: '1',
-    text: "Hi there! I'm BookChat, to chat about A chirstmas carol, the book by Charles Dickens. How can I help you?",
+    text: "Hi there! I'm your MentalHealthChat assistant. Based on the provided documents, how can I help you manage stress or understand mental wellness topics today?",
     isUser: false,
     timestamp: new Date().toISOString(),
   }), []);
@@ -25,7 +26,7 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const addMessage = useCallback((text: string, isUser: boolean): Message => {
     const newMessage: Message = {
-      id: Date.now().toString(),
+      id: Date.now().toString() + (isUser ? '-user' : '-ai'),
       text,
       isUser,
       timestamp: new Date().toISOString(),
@@ -33,6 +34,38 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setMessages(prev => [...prev, newMessage]);
     // Don't add user messages or initial AI message to animated set here
     return newMessage;
+  }, []);
+
+  const appendAssistantChunk = useCallback((chunk: string) => {
+    setMessages(prevMessages => {
+      if (prevMessages.length === 0) {
+        const newMessage: Message = {
+          id: Date.now().toString() + '-ai-chunk',
+          text: chunk,
+          isUser: false,
+          timestamp: new Date().toISOString(),
+        };
+        return [newMessage];
+      }
+
+      const lastMessage = prevMessages[prevMessages.length - 1];
+
+      if (!lastMessage.isUser) {
+        const updatedLastMessage = {
+          ...lastMessage,
+          text: lastMessage.text + chunk,
+        };
+        return [...prevMessages.slice(0, -1), updatedLastMessage];
+      } else {
+        const newMessage: Message = {
+          id: Date.now().toString() + '-ai-chunk',
+          text: chunk,
+          isUser: false,
+          timestamp: new Date().toISOString(),
+        };
+        return [...prevMessages, newMessage];
+      }
+    });
   }, []);
 
   const markAsAnimated = useCallback((id: string) => {
@@ -47,11 +80,12 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const contextValue = useMemo(() => ({
     messages,
     addMessage,
+    appendAssistantChunk,
     clearMessages,
     setMessages,
     animatedMessageIds,
     markAsAnimated
-  }), [messages, addMessage, clearMessages, animatedMessageIds, markAsAnimated]);
+  }), [messages, addMessage, appendAssistantChunk, clearMessages, animatedMessageIds, markAsAnimated]);
 
   return (
     <ChatContext.Provider value={contextValue}>

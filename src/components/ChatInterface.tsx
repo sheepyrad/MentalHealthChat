@@ -3,7 +3,6 @@ import { useChat } from '@/hooks/useChat';
 import { useChatContext } from '@/context/ChatContext';
 import { cn } from '@/lib/utils';
 import ThoughtBubble from './ThoughtBubble';
-import BreathingExercise from './BreathingExercise';
 import JournalPrompt from './JournalPrompt';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
@@ -19,7 +18,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
   const { messages, animatedMessageIds } = useChatContext();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [showBreathingExercise, setShowBreathingExercise] = useState(false);
   const [showJournalPrompt, setShowJournalPrompt] = useState(false);
   const [lastMessageIndex, setLastMessageIndex] = useState(() => messages.length > 0 ? messages.length - 1 : -1);
 
@@ -29,7 +27,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, showBreathingExercise, showJournalPrompt]);
+  }, [messages, showJournalPrompt]);
 
   useEffect(() => {
     setLastMessageIndex(messages.length - 1);
@@ -42,15 +40,9 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
       setInputValue('');
 
       const lowercaseInput = inputValue.toLowerCase();
-      if (lowercaseInput.includes('stress') || lowercaseInput.includes('anxiety') || lowercaseInput.includes('breath')) {
-        setTimeout(() => {
-          setShowBreathingExercise(true);
-          setShowJournalPrompt(false);
-        }, 1500);
-      } else if (lowercaseInput.includes('reflect') || lowercaseInput.includes('journal') || lowercaseInput.includes('thought')) {
+      if (lowercaseInput.includes('reflect') || lowercaseInput.includes('journal') || lowercaseInput.includes('thought')) {
         setTimeout(() => {
           setShowJournalPrompt(true);
-          setShowBreathingExercise(false);
         }, 1500);
       }
     }
@@ -100,23 +92,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ className }) => {
               <div className="w-2 h-2 bg-mental-400 rounded-full"></div>
               <div className="w-2 h-2 bg-mental-400 rounded-full animation-delay-200"></div>
               <div className="w-2 h-2 bg-mental-400 rounded-full animation-delay-400"></div>
-            </div>
-          )}
-
-          {showBreathingExercise && (
-            <div className="my-4 animate-slide-up opacity-0" style={{animationDelay: '100ms'}}>
-              <ThoughtBubble
-                messageId={'breathing-intro-' + Date.now()}
-                message="I notice you might be feeling stressed. Try this breathing exercise to help calm your mind:"
-                isUser={false}
-                timestamp={formatTime(new Date().toISOString())}
-              />
-              <div className="mt-2">
-                <BreathingExercise 
-                  className="mt-4" 
-                  onComplete={() => setShowBreathingExercise(false)}
-                />
-              </div>
             </div>
           )}
 
