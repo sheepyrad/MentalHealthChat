@@ -16,7 +16,7 @@ const ChatContext = createContext<ChatContextType | undefined>(undefined);
 export const ChatProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const initialMessage: Message = useMemo(() => ({
     id: '1',
-    text: "Hi there! I'm your MentalHealthChat assistant. Based on the provided documents, how can I help you manage stress or understand mental wellness topics today?",
+    text: "Hi there. I'm here to talk with you—no pressure, no judgment. Whatever's on your mind, you're welcome to share it at your own pace. This is a safe space just for you, and we can take things one step at a time. 😊",
     isUser: false,
     timestamp: new Date().toISOString(),
   }), []);
