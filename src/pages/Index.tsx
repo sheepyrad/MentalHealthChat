@@ -59,7 +59,7 @@ const Index = () => {
                 <div className="absolute -top-10 -left-10 w-64 h-64 bg-mental-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float"></div>
                 <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-mental-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" style={{ animationDelay: '2s' }}></div>
                 <div className="relative z-10">
-                  {/* <ChatInterface className="shadow-medium" /> */}
+                  <MockChatWindow className="shadow-medium" />
                 </div>
               </div>
             </div>

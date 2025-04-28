@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,18 @@ interface MockChatWindowProps {
 }
 
 const MockChatWindow: React.FC<MockChatWindowProps> = ({ className }) => {
+  const [showTypingIndicator, setShowTypingIndicator] = useState(false);
+
+  useEffect(() => {
+    // Last message delay (4s) + animation duration (1s)
+    const timer = setTimeout(() => {
+      setShowTypingIndicator(true);
+    }, 5000);
+
+    // Cleanup timeout on component unmount
+    return () => clearTimeout(timer);
+  }, []); // Empty dependency array ensures this runs only once on mount
+
   return (
     <div className={cn("glass-card flex flex-col h-[500px] shadow-lg rounded-lg overflow-hidden", className)}>
       {/* Header */}
@@ -32,7 +44,7 @@ const MockChatWindow: React.FC<MockChatWindowProps> = ({ className }) => {
           message="Hi there! How are you feeling today?"
           isUser={false}
           timestamp="10:30 AM"
-          className="opacity-100 animate-none"
+          animationDelay="0.5s"
         />
         {/* User Message */}
         <ThoughtBubble 
@@ -40,7 +52,7 @@ const MockChatWindow: React.FC<MockChatWindowProps> = ({ className }) => {
           message="Feeling a bit stressed..."
           isUser={true}
           timestamp="10:31 AM"
-          className="opacity-100 animate-none"
+          animationDelay="3s"
         />
          {/* AI Message */}
         <ThoughtBubble 
@@ -48,14 +60,16 @@ const MockChatWindow: React.FC<MockChatWindowProps> = ({ className }) => {
           message="I'm here to listen. Tell me more about it."
           isUser={false}
           timestamp="10:31 AM"
-          className="opacity-100 animate-none"
+          animationDelay="4s"
         />
-        {/* Typing Indicator */}
-        <div className="flex items-center space-x-1 ml-2 opacity-50 pt-2">
-            <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse"></div>
-            <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
-            <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
-        </div>
+        {/* Typing Indicator - Conditionally Rendered */}
+        {showTypingIndicator && (
+          <div className="flex items-center space-x-1 ml-2 opacity-50 pt-2">
+              <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse"></div>
+              <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
+              <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+          </div>
+        )}
       </div>
 
       {/* Mock Input Area */}

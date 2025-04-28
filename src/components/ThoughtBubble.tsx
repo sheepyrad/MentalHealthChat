@@ -8,6 +8,7 @@ interface ThoughtBubbleProps {
   isUser: boolean;
   timestamp?: string;
   className?: string;
+  animationDelay?: string;
 }
 
 const ThoughtBubble: React.FC<ThoughtBubbleProps> = ({ 
@@ -16,13 +17,17 @@ const ThoughtBubble: React.FC<ThoughtBubbleProps> = ({
   isUser, 
   timestamp,
   className,
+  animationDelay = '0s',
 }) => {
   return (
-    <div className={cn(
-      "animate-slide-up opacity-0",
-      isUser ? "ml-auto" : "mr-auto",
-      className
-    )}>
+    <div 
+      className={cn(
+        "animate-slide-up-fade opacity-0",
+        isUser ? "ml-auto" : "mr-auto",
+        className
+      )}
+      style={{ animationDelay }}
+    >
       <div className={cn(
         "max-w-[85%] px-5 py-3 rounded-2xl shadow-soft prose prose-sm dark:prose-invert",
         "prose-p:my-1 prose-li:my-0.5",

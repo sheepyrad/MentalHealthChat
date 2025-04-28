@@ -1,69 +1,115 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 210 50% 98%;
-    --foreground: 222 47% 11%;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 222.2 84% 4.9%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 210 100% 50%;
+    --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 210 20% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 222 47% 11%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
+
+    /* Custom Colors */
+    --mental-50: 200 100% 97%;
+    --mental-100: 200 100% 90%;
+    --mental-200: 200 95% 80%;
+    --mental-300: 200 90% 70%;
+    --mental-400: 200 85% 60%; /* Primary Blue/Teal */
+    --mental-500: 200 80% 50%; /* Main Brand Color */
+    --mental-600: 200 75% 40%;
+    --mental-700: 200 70% 30%;
+    --mental-800: 200 65% 25%;
+    --mental-900: 200 60% 20%;
+
+    --calm-50: 160 10% 97%;
+    --calm-100: 160 15% 90%;
+    --calm-200: 160 20% 80%;
+    --calm-300: 160 25% 70%;
+    --calm-400: 160 30% 60%; /* Soothing Gray/Subtle Green */
+    --calm-500: 160 35% 50%;
+    --calm-600: 160 40% 40%; /* Text color */
+    --calm-700: 160 45% 30%;
+    --calm-800: 160 50% 25%;
+    --calm-900: 160 55% 20%;
+
   }
 
   .dark {
-    --background: 222 30% 10%;
+    --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
 
-    --card: 222 30% 13%;
+    --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 222 30% 10%;
+    --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 100% 50%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
 
-    --secondary: 217 32% 17%;
+    --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 217 32% 17%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 217 32% 17%;
+    --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 62% 30%;
+    --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217 32% 17%;
-    --input: 217 32% 17%;
-    --ring: 212 40% 90%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+
+    /* Custom Dark Colors */
+    --mental-50: 200 60% 15%;
+    --mental-100: 200 65% 20%;
+    --mental-200: 200 70% 25%;
+    --mental-300: 200 75% 30%;
+    --mental-400: 200 80% 40%; /* Primary Blue/Teal */
+    --mental-500: 200 85% 50%; /* Main Brand Color */
+    --mental-600: 200 90% 60%;
+    --mental-700: 200 95% 70%;
+    --mental-800: 200 100% 80%;
+    --mental-900: 200 100% 90%;
+
+    --calm-50: 160 5% 15%;
+    --calm-100: 160 10% 20%;
+    --calm-200: 160 15% 25%;
+    --calm-300: 160 20% 30%;
+    --calm-400: 160 25% 40%; /* Soothing Gray/Subtle Green */
+    --calm-500: 160 30% 50%;
+    --calm-600: 160 35% 60%; /* Text color */
+    --calm-700: 160 40% 70%;
+    --calm-800: 160 45% 80%;
+    --calm-900: 160 50% 90%;
   }
 
   * {
@@ -146,4 +192,57 @@
 
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-mental-300 dark:bg-gray-600;
+}
+
+/* Glassmorphism Effect */
+.glass-card {
+  @apply bg-white/60 dark:bg-gray-800/60 backdrop-blur-lg border border-white/20 dark:border-gray-700/30 rounded-lg shadow-md;
+}
+
+/* Add custom animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.8s ease-out forwards;
+  animation-delay: var(--animation-delay, 0s); /* Use CSS variable for delay */
+  opacity: 0; /* Start hidden */
+}
+
+/* Pulse animation for typing indicator */
+@keyframes subtle-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+.animate-subtle-pulse {
+  animation: subtle-pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Slide up and fade in for messages */
+@keyframes slide-up-fade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up-fade {
+  animation: slide-up-fade 0.5s ease-out forwards;
 }
