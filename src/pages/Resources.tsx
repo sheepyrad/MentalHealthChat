@@ -7,6 +7,8 @@ import SidebarNav from '@/components/SidebarNav';
 import ResourceViewerCard from '@/components/ResourceViewerCard';
 import { cn } from '@/lib/utils';
 import { AnimatePresence } from 'framer-motion';
+import { useLayout } from '@/context/LayoutContext';
+import SidebarToggle from '@/components/SidebarToggle';
 
 type ResourceCategory = 'all' | 'article' | 'video' | 'exercise';
 
@@ -108,6 +110,7 @@ const Resources = () => {
   const [category, setCategory] = useState<ResourceCategory>('all');
   const [filteredResources, setFilteredResources] = useState<Resource[]>(resources);
   const [viewingResource, setViewingResource] = useState<Resource | null>(null);
+  const { isSidebarOpen } = useLayout();
 
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
@@ -261,6 +264,7 @@ const Resources = () => {
       </div>
       
       <SidebarNav />
+      <SidebarToggle />
 
       <AnimatePresence>
         {viewingResource && (

@@ -12,6 +12,9 @@ import { addUserRoutine, isRoutineAdded, removeUserRoutine } from '@/lib/routine
 import SidebarNav from '@/components/SidebarNav'; // Import shared sidebar
 import { getMoodEntries, MoodEntry, saveAllMoodEntries } from '@/lib/moodStorage'; // Import mood storage functions
 import DevTools from '@/components/DevTools'; // Import DevTools
+import { useLayout } from '@/context/LayoutContext'; // Import useLayout
+import { cn } from '@/lib/utils'; // Import cn
+import SidebarToggle from '@/components/SidebarToggle'; // Import toggle button
 
 // Sample data - in a real app this would be loaded from an API/database
 const sessionHistoryData = [
@@ -33,6 +36,7 @@ const Profile = () => {
   const [checkInConsistency, setCheckInConsistency] = useState(0);
   // Add state to track if mood tracking routine is added
   const [showMoodSection, setShowMoodSection] = useState(false); 
+  const { isSidebarOpen } = useLayout(); // Use layout context
 
   // --- Data Processing Logic (extracted for reuse) ---
   const processMoodData = useCallback(() => {
@@ -151,7 +155,7 @@ const Profile = () => {
 
   return (
     <div className="flex h-screen w-full bg-gradient-to-b from-background to-mental-50/50 dark:from-gray-900 dark:to-gray-800/50 overflow-hidden">
-      {/* Main Content Area */}
+      {/* Main Content Area - Remove conditional padding */}
       <div className="flex-1 h-full p-6 overflow-y-auto">
         <div className="max-w-6xl mx-auto">
           <div className="mb-8 pt-6">
@@ -303,8 +307,11 @@ const Profile = () => {
           
         </div>
       </div>
+      
       {/* SidebarNav */}
       <SidebarNav />
+      {/* Add Toggle Button outside */}
+      <SidebarToggle />
     </div>
   );
 };
