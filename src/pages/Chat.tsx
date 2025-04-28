@@ -1,12 +1,15 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import ChatInterface from '@/components/ChatInterface';
 import { toast } from '@/components/ui/use-toast';
 import SidebarNav from '@/components/SidebarNav';
+import { useLayout } from '@/context/LayoutContext';
+import { cn } from '@/lib/utils';
+import SidebarToggle from '@/components/SidebarToggle';
 
 const Chat = () => {
   const navigate = useNavigate();
+  const { isSidebarOpen } = useLayout();
 
   // Check if user is authenticated
   React.useEffect(() => {
@@ -40,6 +43,7 @@ const Chat = () => {
       
       {/* Use the shared SidebarNav component */}
       <SidebarNav />
+      <SidebarToggle />
     </div>
   );
 };

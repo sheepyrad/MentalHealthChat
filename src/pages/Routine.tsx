@@ -23,6 +23,9 @@ import {
     JournalEntry
 } from '@/lib/journalStorage.ts';
 import MoodTracker from '@/components/MoodTracker'; // Import MoodTracker component
+import { useLayout } from '@/context/LayoutContext'; // Import useLayout
+import { cn } from '@/lib/utils'; // Import cn
+import SidebarToggle from '@/components/SidebarToggle'; // Import toggle button
 
 // --- Constants ---
 const HARDCODED_PIN = '1234'; // !! INSECURE !! For demonstration only.
@@ -41,6 +44,8 @@ const Routine = () => {
   const [pinInput, setPinInput] = useState('');
   const [pinError, setPinError] = useState('');
   const [unlockedEntryIds, setUnlockedEntryIds] = useState<Set<string>>(new Set());
+
+  const { isSidebarOpen } = useLayout(); // Use layout context
 
   // Check if journaling routine is added
   const showJournal = userRoutines.some(routine => routine.id === 'journal');
@@ -172,7 +177,7 @@ const Routine = () => {
 
   return (
     <div className="flex h-screen w-full bg-gradient-to-b from-background to-mental-50/50 dark:from-gray-900 dark:to-gray-800/50 overflow-hidden">
-      {/* Main Content Area - Moved First */}
+      {/* Main Content Area - Remove conditional padding */}
       <ScrollArea className="flex-1 h-full p-6">
         <div className="max-w-4xl mx-auto">
           {/* --- Routines Section --- */}
@@ -331,8 +336,10 @@ const Routine = () => {
         </div>
       </ScrollArea>
 
-      {/* SidebarNav - Moved Last */}
+      {/* SidebarNav */}
       <SidebarNav />
+      {/* Add Toggle Button outside */}
+      <SidebarToggle />
 
       {/* PIN Prompt Dialog - Placed outside the main flex layout for positioning */}
        <Dialog open={showPinPrompt} onOpenChange={setShowPinPrompt}>

@@ -8,11 +8,15 @@ import { Button } from '@/components/ui/button';
 import SidebarNav from '@/components/SidebarNav';
 import { routineItems, RoutineItem } from '@/data/routines'; // Import from the new file
 import { addUserRoutine, isRoutineAdded, removeUserRoutine } from '@/lib/routineStorage'; // Import storage functions
+import { useLayout } from '@/context/LayoutContext'; // Import useLayout
+import { cn } from '@/lib/utils'; // Import cn
+import SidebarToggle from '@/components/SidebarToggle'; // Import toggle button
 
 const Dashboard = () => {
   const navigate = useNavigate();
   // Add state to trigger re-render when routines change
   const [routineUpdateTrigger, setRoutineUpdateTrigger] = useState(0);
+  const { isSidebarOpen } = useLayout(); // Use layout context
 
   // Check if user is authenticated
   useEffect(() => {
@@ -42,7 +46,7 @@ const Dashboard = () => {
 
   return (
     <div className="flex h-screen w-full bg-gradient-to-b from-background to-mental-50/50 dark:from-gray-900 dark:to-gray-800/50 overflow-hidden">
-      {/* Main Content Area - Moved First */}
+      {/* Main Content Area - Remove conditional padding */}
       <div className="flex-1 h-full p-4 flex flex-col overflow-auto">
         {/* Apply animation to header div */}
         <div className="text-center mb-8 pt-6 animate-slide-up opacity-0" style={{ animationDelay: '100ms' }}>
@@ -116,8 +120,10 @@ const Dashboard = () => {
         </div>
       </div>
       
-      {/* SidebarNav - Moved Last */}
+      {/* SidebarNav */}
       <SidebarNav />
+      {/* Add Toggle Button outside */}
+      <SidebarToggle />
     </div>
   );
 };
