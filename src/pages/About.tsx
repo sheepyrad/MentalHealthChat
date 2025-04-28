@@ -1,8 +1,95 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import FeatureCard from '@/components/FeatureCard';
+
+// Define the hotline data (place before the component or import from separate file)
+const hotlines = [
+  {
+    name: "Mental Health Support Hotline",
+    description: "24-hour emotional support hotline for general public (co-ordinates about 20 related organisations to provide comprehensive mental support services to the public.)",
+    hours: "24-hour",
+    languages: "Cantonese, English",
+    phone: "+852 18111"
+  },
+  {
+    name: "Mental Health Direct (Hospital Authority)",
+    description: "24-hour psychiatric health consultation to assist with crisis management or emergency assistance",
+    hours: "24-hour",
+    languages: "Cantonese",
+    phone: "+852 2466 7350"
+  },
+  {
+    name: "Suicide prevention hotline (The Samaritans)",
+    description: "24-hour suicide prevention hotline and emotional support",
+    hours: "24-hour",
+    languages: "Cantonese, English, French, German, Hindi, Malay, Mandarin, Panjabi, Spanish, Tagalog and Urdu",
+    phone: "+852 2896 0000"
+  },
+  {
+    name: "Emotional support hotline (The Samaritans Befrienders Hong Kong)",
+    description: "24-hour suicide prevention hotline and emotional support",
+    hours: "24-hour",
+    languages: "Cantonese",
+    phone: "+852 2389 2222"
+  },
+  {
+    name: "Suicide prevention hotline (Suicide Prevention Services)",
+    description: "24-hour suicide prevention hotline with emotional support",
+    hours: "24-hour",
+    languages: "Cantonese",
+    phone: "+852 2382 0000"
+  },
+  {
+    name: "24-hour Family crisis hotline (Caritas Family Crisis Support Centre)",
+    description: "24-hour family crisis hotline answered by social workers",
+    hours: "24-hour",
+    languages: "Cantonese",
+    phone: "+852 18288"
+  },
+  {
+    name: "24-hour youth hotline service (Youth Outreach)",
+    description: "24-hour emotional support hotline for youth",
+    hours: "24-hour",
+    languages: "Cantonese",
+    phone: "+852 9088 1023"
+  },
+  {
+    name: "Hotline for Carer Support",
+    description: "24-hour support hotline manned by professional social workers",
+    hours: "24-hour",
+    languages: "Cantonese",
+    phone: "+852 182183"
+  },
+  {
+    name: "Elderly suicide prevention hotline (Suicide Prevention Services)",
+    description: "24-hour suicide prevention hotline with emotional support for elderly",
+    hours: "24-hour",
+    languages: "Cantonese",
+    phone: "+852 2382 0881"
+  },
+  {
+    name: "Pride Line (Tung Wah Group of Hospitals)",
+    description: "Supports LGBT+ community support, providing emotional support, professional referrals, group activities and follow-up services handled by a professional social worker",
+    hours: "24-hour",
+    languages: "Cantonese",
+    phone: "+852 2217 5959"
+  },
+  {
+    name: "Mental Health Enquiry hotline (Baptist Oi Kwan Social Service)",
+    description: "Mental health information and emotional support, with enquires answered by social workers",
+    hours: "24-hour info / SW: Mon-Fri 10am-1230pm, 2pm-5pm, Tue 7pm-9pm",
+    languages: "Cantonese",
+    phone: "+852 2535 4135"
+  },
+  {
+    name: "24-hour enquiries hotline (Social Welfare Department)",
+    description: "24-hour information support hotline and emotional support service during office hours",
+    hours: "24-hour info / SW: Mon-Fri 9am-5pm, Sat 9am-12pm",
+    languages: "Cantonese, English",
+    phone: "+852 2343 2255"
+  }
+];
 
 const About = () => {
   return (
@@ -120,11 +207,22 @@ const About = () => {
               If you're experiencing a mental health crisis or need immediate support, please contact a mental health professional, visit your local emergency department, or call a crisis helpline immediately.
             </p>
             
-            <div className="bg-mental-50 p-4 rounded-md">
-              <p className="font-medium">Resources for immediate support:</p>
-              <ul className="mt-2 space-y-1">
-                <li>National Suicide Prevention Lifeline: 988 or 1-800-273-8255</li>
-                <li>Crisis Text Line: Text HOME to 741741</li>
+            <div className="bg-mental-50 dark:bg-gray-800 p-4 rounded-md">
+              <p className="font-medium text-mental-800 dark:text-mental-200">Resources for Immediate Support (Hong Kong):</p>
+              <ul className="mt-3 space-y-4 text-sm text-mental-700 dark:text-mental-300">
+                {
+                  hotlines.map((hotline, index) => (
+                    <li key={index}>
+                      <strong className="block font-semibold text-mental-800 dark:text-mental-100">{hotline.name}</strong>
+                      <p className="text-xs text-calm-600 dark:text-calm-400 mb-1">{hotline.description}</p>
+                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
+                        <span className="whitespace-nowrap">🕒 {hotline.hours}</span>
+                        <span className="whitespace-nowrap">🗣️ {hotline.languages}</span>
+                        <a href={`tel:${hotline.phone.replace(/\s/g, '')}`} className="font-medium text-mental-600 hover:text-mental-800 dark:text-mental-400 dark:hover:text-mental-200 whitespace-nowrap">📞 {hotline.phone}</a>
+                      </div>
+                    </li>
+                  ))
+                }
               </ul>
             </div>
           </div>
@@ -148,12 +246,6 @@ const About = () => {
               >
                 Start Chatting Now
               </Link>
-              <a 
-                href="/#breathing-section"
-                className="px-6 py-3 bg-white border border-mental-200 text-mental-700 rounded-full hover:bg-mental-50 transition-colors text-center"
-              >
-                Try a Breathing Exercise
-              </a>
             </div>
           </div>
         </div>
