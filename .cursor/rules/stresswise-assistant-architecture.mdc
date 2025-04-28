@@ -1,0 +1,34 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# StressWise Assistant Architecture Guide
+
+This document outlines the key architectural aspects of the StressWise Assistant web application. Refer to the [README.md](mdc:README.md) for more details.
+
+## Core Technologies
+
+-   **Framework:** React with TypeScript
+-   **Build Tool:** Vite ([vite.config.ts](mdc:vite.config.ts))
+-   **Styling:** Tailwind CSS ([tailwind.config.ts](mdc:tailwind.config.ts)) with shadcn/ui components ([components.json](mdc:components.json), components are in [src/components/ui](mdc:src/components/ui))
+-   **Routing:** React Router DOM
+-   **State/Data:** TanStack Query (`@tanstack/react-query`), React Context API
+
+## Project Structure & Key Files
+
+-   **Entry Point:** The application starts execution in [src/main.tsx](mdc:src/main.tsx).
+-   **Main App Component:** The root React component containing global layout and routing setup is [src/App.tsx](mdc:src/App.tsx).
+-   **Routing:** Routes are defined within [src/App.tsx](mdc:src/App.tsx) and map URLs to page components located in the [src/pages/](mdc:src/pages) directory (e.g., [src/pages/Chat.tsx](mdc:src/pages/Chat.tsx), [src/pages/Dashboard.tsx](mdc:src/pages/Dashboard.tsx)).
+-   **Reusable Components:** General reusable components are found in [src/components/](mdc:src/components). Specific shadcn/ui components are in [src/components/ui/](mdc:src/components/ui).
+-   **Context Providers:** Application-wide state is managed via Context. Key providers include [src/components/ThemeProvider.tsx](mdc:src/components/ThemeProvider.tsx) and potentially others in [src/context/](mdc:src/context) like [src/context/ChatContext.tsx](mdc:src/context/ChatContext.tsx).
+-   **Utilities:** Helper functions and library configurations reside in [src/lib/](mdc:src/lib).
+-   **Custom Hooks:** Custom React hooks are located in [src/hooks/](mdc:src/hooks).
+-   **Static Assets:** Publicly served static files are in the `public/` directory.
+-   **Configuration:**
+    -   Vite: [vite.config.ts](mdc:vite.config.ts)
+    -   Tailwind: [tailwind.config.ts](mdc:tailwind.config.ts), [postcss.config.js](mdc:postcss.config.js)
+    -   TypeScript: [tsconfig.json](mdc:tsconfig.json), [tsconfig.app.json](mdc:tsconfig.app.json)
+    -   shadcn/ui: [components.json](mdc:components.json)
+    -   Dependencies: [package.json](mdc:package.json)
+

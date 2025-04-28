@@ -1,22 +1,18 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from '@/components/ui/use-toast';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { HeartPulse, Coffee, BookOpen, Pill, Clipboard, Bookmark, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import SidebarNav from '@/components/SidebarNav';
-
-interface RoutineItem {
-  id: string;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  category: 'daily' | 'wellness' | 'mental';
-}
+import { routineItems, RoutineItem } from '@/data/routines'; // Import from the new file
+import { addUserRoutine, isRoutineAdded, removeUserRoutine } from '@/lib/routineStorage'; // Import storage functions
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  // Add state to trigger re-render when routines change
+  const [routineUpdateTrigger, setRoutineUpdateTrigger] = useState(0);
 
   // Check if user is authenticated
   useEffect(() => {
@@ -32,54 +28,21 @@ const Dashboard = () => {
     }
   }, [navigate]);
 
-  const routineItems: RoutineItem[] = [
-    {
-      id: 'breathing',
-      title: 'Breathing Exercises',
-      description: 'Practice deep breathing for 5 minutes to reduce stress and anxiety.',
-      icon: <HeartPulse className="h-6 w-6 text-mental-600" />,
-      category: 'daily'
-    },
-    {
-      id: 'journal',
-      title: 'Daily Journaling',
-      description: 'Write down your thoughts and feelings to gain clarity and perspective.',
-      icon: <BookOpen className="h-6 w-6 text-mental-600" />,
-      category: 'mental'
-    },
-    {
-      id: 'nosugar',
-      title: 'Reduce Sugar Intake',
-      description: 'Minimize processed sugar consumption to stabilize mood and energy levels.',
-      icon: <Coffee className="h-6 w-6 text-mental-600" />,
-      category: 'wellness'
-    },
-    {
-      id: 'medication',
-      title: 'Medication Reminder',
-      description: 'Take your prescribed medications regularly as directed by your healthcare provider.',
-      icon: <Pill className="h-6 w-6 text-mental-600" />,
-      category: 'daily'
-    },
-    {
-      id: 'notes',
-      title: 'Mood Tracking',
-      description: 'Record your mood patterns to identify triggers and improvements.',
-      icon: <Clipboard className="h-6 w-6 text-mental-600" />,
-      category: 'mental'
-    },
-    {
-      id: 'mindfulness',
-      title: 'Mindfulness Practice',
-      description: 'Spend 10 minutes being fully present and aware of your surroundings.',
-      icon: <Bookmark className="h-6 w-6 text-mental-600" />,
-      category: 'mental'
+  const handleToggleRoutine = (id: string) => {
+    if (isRoutineAdded(id)) {
+      removeUserRoutine(id);
+      toast({ title: "Removed from Routine" });
+    } else {
+      addUserRoutine(id);
+      toast({ title: "Added to Routine" });
     }
-  ];
+    // Trigger re-render
+    setRoutineUpdateTrigger(prev => prev + 1);
+  };
 
   return (
     <div className="flex h-screen w-full bg-gradient-to-b from-background to-mental-50/50 dark:from-gray-900 dark:to-gray-800/50 overflow-hidden">
-      {/* Main Content Area */}
+      {/* Main Content Area - Moved First */}
       <div className="flex-1 h-full p-4 flex flex-col overflow-auto">
         <div className="text-center mb-8 pt-6">
           <h1 className="text-3xl font-bold mb-2">Welcome to Your Wellness Journey</h1>
@@ -133,8 +96,16 @@ const Dashboard = () => {
                     </p>
                   </CardContent>
                   <CardFooter>
-                    <Button variant="outline" className="w-full">
-                      Add to Routine
+                    <Button
+                      variant={isRoutineAdded(item.id) ? "outline" : "default"}
+                      className={`w-full ${
+                        isRoutineAdded(item.id)
+                          ? 'text-red-600 border-red-500 hover:bg-red-50 dark:text-red-400 dark:border-red-600 dark:hover:bg-red-900/20'
+                          : 'bg-green-500 hover:bg-green-600 text-white'
+                      }`}
+                      onClick={() => handleToggleRoutine(item.id)}
+                    >
+                      {isRoutineAdded(item.id) ? 'Remove from Routine' : 'Add to Routine'}
                     </Button>
                   </CardFooter>
                 </Card>
@@ -144,7 +115,7 @@ const Dashboard = () => {
         </div>
       </div>
       
-      {/* Use the shared SidebarNav component */}
+      {/* SidebarNav - Moved Last */}
       <SidebarNav />
     </div>
   );

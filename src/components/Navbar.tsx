@@ -1,15 +1,16 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { useChatContext } from '@/context/ChatContext';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { clearMessages } = useChatContext();
   
   useEffect(() => {
     const handleScroll = () => {
@@ -31,6 +32,7 @@ export default function Navbar() {
   };
 
   const handleLogout = () => {
+    clearMessages();
     localStorage.removeItem("isAuthenticated");
     setIsAuthenticated(false);
     navigate("/");
