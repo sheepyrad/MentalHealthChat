@@ -44,7 +44,8 @@ const Dashboard = () => {
     <div className="flex h-screen w-full bg-gradient-to-b from-background to-mental-50/50 dark:from-gray-900 dark:to-gray-800/50 overflow-hidden">
       {/* Main Content Area - Moved First */}
       <div className="flex-1 h-full p-4 flex flex-col overflow-auto">
-        <div className="text-center mb-8 pt-6">
+        {/* Apply animation to header div */}
+        <div className="text-center mb-8 pt-6 animate-slide-up opacity-0" style={{ animationDelay: '100ms' }}>
           <h1 className="text-3xl font-bold mb-2">Welcome to Your Wellness Journey</h1>
           <p className="text-lg text-calm-600 dark:text-calm-400">
             Your personalized dashboard for mental wellbeing
@@ -52,8 +53,8 @@ const Dashboard = () => {
         </div>
         
         <div className="max-w-4xl mx-auto w-full">
-          {/* Chat Button Card */}
-          <Card className="mb-8 bg-mental-50/80 dark:bg-gray-800/50 border-mental-100 dark:border-gray-700">
+          {/* Chat Button Card - Apply animation */}
+          <Card className="mb-8 bg-mental-50/80 dark:bg-gray-800/50 border-mental-100 dark:border-gray-700 animate-slide-up opacity-0" style={{ animationDelay: '300ms' }}>
             <CardHeader>
               <CardTitle className="text-2xl">Continue Your Conversation</CardTitle>
               <CardDescription>Chat with your mental wellness companion anytime</CardDescription>
@@ -69,8 +70,8 @@ const Dashboard = () => {
             </CardContent>
           </Card>
           
-          {/* Routine List */}
-          <div className="mb-8">
+          {/* Routine List - Apply animation */}
+          <div className="mb-8 animate-slide-up opacity-0" style={{ animationDelay: '500ms' }}>
             <h2 className="text-2xl font-bold mb-4">Your Wellness Routines</h2>
             <p className="text-calm-600 dark:text-calm-400 mb-6">
               Regular routines and healthy habits to help manage your emotions and improve wellbeing.

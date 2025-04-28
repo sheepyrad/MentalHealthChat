@@ -68,7 +68,7 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-4 md:px-8 bg-white/50 dark:bg-gray-800/20">
+      <section className="py-20 px-4 md:px-8 bg-white/50 dark:bg-gray-800/20 animate-slide-up opacity-0" style={{ animationDelay: '300ms' }}>
         <div className="container mx-auto">
           <div className="text-center mb-16 animate-slide-up opacity-0">
             <div className="inline-block px-3 py-1 bg-mental-100 text-mental-600 dark:bg-gray-800 dark:text-mental-400 rounded-full text-sm font-medium mb-4">
@@ -83,7 +83,7 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div id="chat" className="animate-slide-up opacity-0" style={{ animationDelay: '100ms' }}>
+            <div id="chat">
               <FeatureCard
                 title="AI Chat Companion"
                 description="Have supportive conversations about your feelings, challenges, and goals with our empathetic AI companion."
@@ -93,7 +93,7 @@ const Index = () => {
               </FeatureCard>
             </div>
             
-            <div className="animate-slide-up opacity-0" style={{ animationDelay: '300ms' }}>
+            <div>
               <FeatureCard
                 title="Mood Tracking"
                 description="Monitor your emotional patterns over time to gain insights into your mental wellbeing journey."
@@ -103,7 +103,7 @@ const Index = () => {
               </FeatureCard>
             </div>
             
-            <div className="animate-slide-up opacity-0" style={{ animationDelay: '400ms' }}>
+            <div>
               <FeatureCard
                 title="Journaling"
                 description="Practice reflective writing with guided prompts to process emotions and gain perspective."
@@ -113,7 +113,7 @@ const Index = () => {
               </FeatureCard>
             </div>
             
-            <div className="animate-slide-up opacity-0" style={{ animationDelay: '500ms' }}>
+            <div>
               <FeatureCard
                 title="Mindfulness Sessions"
                 description="Build present-moment awareness through guided mindfulness practices tailored to your needs."
@@ -123,7 +123,7 @@ const Index = () => {
               </FeatureCard>
             </div>
             
-            <div className="animate-slide-up opacity-0" style={{ animationDelay: '600ms' }}>
+            <div>
               <FeatureCard
                 title="Progress Insights"
                 description="View personalized insights about your wellbeing journey and track your improvement over time."
@@ -137,7 +137,7 @@ const Index = () => {
       </section>
 
       {/* Main Tools Section */}
-      <section className="py-20 px-4 md:px-8">
+      <section className="py-20 px-4 md:px-8 animate-slide-up opacity-0" style={{ animationDelay: '500ms' }}>
         <div className="container mx-auto">
           {/* Chat Section */}
           <div id="chat-section" className="mb-20">
