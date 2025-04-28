@@ -162,7 +162,7 @@ const Profile = () => {
           </div>
 
           {/* Section 1: Wellness Routines */}
-          <div className="mb-12"> {/* Added more bottom margin */} 
+          <div className="mb-12 animate-slide-up opacity-0" style={{ animationDelay: '100ms' }}>
             <h2 className="text-2xl font-bold mb-4">Your Wellness Routines</h2>
             <p className="text-calm-600 dark:text-calm-400 mb-6">
               Add or remove routines to customize your wellness plan.
@@ -206,7 +206,7 @@ const Profile = () => {
 
           {/* Section 2: Mood Tracking Dashboard (Conditional) */}
           {showMoodSection ? (
-            <div className="mb-12"> {/* Added bottom margin */} 
+            <div className="mb-12 animate-slide-up opacity-0" style={{ animationDelay: '300ms' }}>
               <h2 className="text-2xl font-bold mb-6 text-center">Mood Dashboard</h2>
               {/* Progress Overview */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -266,7 +266,7 @@ const Profile = () => {
             </div>
           ) : (
             // Reminder if mood tracking is not added
-            <div className="mb-12 p-6 bg-blue-50 dark:bg-blue-900/30 border border-dashed border-blue-300 dark:border-blue-700 rounded-lg text-center">
+            <div className="mb-12 p-6 bg-blue-50 dark:bg-blue-900/30 border border-dashed border-blue-300 dark:border-blue-700 rounded-lg text-center animate-slide-up opacity-0" style={{ animationDelay: '300ms' }}>
                 <p className="text-blue-700 dark:text-blue-300 font-medium mb-2">Want to see your mood dashboard?</p>
                 <p className="text-sm text-blue-600 dark:text-blue-400 mb-4">Add the "Mood Tracking" routine to your plan above to unlock insights and visualize your trends.</p>
                 {/* Optional: Could add a button here to directly add it, but requires more state management */}
@@ -274,7 +274,7 @@ const Profile = () => {
           )}
 
           {/* Section 3: Recent Activities */}
-          <div className="glass-card p-6 mb-8">
+          <div className="glass-card p-6 mb-8 animate-slide-up opacity-0" style={{ animationDelay: showMoodSection ? '500ms' : '300ms' }}>
             <h3 className="text-lg font-medium mb-4">Recent Activities</h3>
             <div className="space-y-4">
               {sessionHistoryData.map((session, index) => (
@@ -294,10 +294,12 @@ const Profile = () => {
           </div>
           
           {/* DevTools Section */}
-          <DevTools 
-            onSimulateDayChange={simulateDayChange} 
-            onClearAllStorage={clearAllStorage}
-          />
+          <div className="animate-slide-up opacity-0" style={{ animationDelay: showMoodSection ? '700ms' : '500ms' }}>
+            <DevTools 
+              onSimulateDayChange={simulateDayChange} 
+              onClearAllStorage={clearAllStorage}
+            />
+          </div>
           
         </div>
       </div>

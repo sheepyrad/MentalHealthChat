@@ -176,7 +176,7 @@ const Routine = () => {
       <ScrollArea className="flex-1 h-full p-6">
         <div className="max-w-4xl mx-auto">
           {/* --- Routines Section --- */}
-          <div className="mb-12 pt-6">
+          <div className="mb-12 pt-6 animate-slide-up opacity-0" style={{ animationDelay: '100ms' }}>
             <h1 className="text-3xl font-bold mb-2">Your Wellness Routine</h1>
             <p className="text-lg text-calm-600 dark:text-calm-400 mb-6">
               Manage your added wellness activities and exercises.
@@ -231,7 +231,7 @@ const Routine = () => {
 
           {/* --- Mood Tracking Section (Conditional) --- */}
           {showMoodTracker && (
-            <div className="mb-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+            <div className="mb-8 pt-8 border-t border-gray-200 dark:border-gray-700 animate-slide-up opacity-0" style={{ animationDelay: '300ms' }}>
                  <div className="text-center mb-6">
                     <h2 className="text-2xl font-bold">Track Your Mood</h2>
                  </div>
@@ -243,7 +243,7 @@ const Routine = () => {
 
           {/* --- Journal Section (Conditional) --- */}
           {showJournal && (
-            <div className="mb-8 pt-8 border-t border-gray-200 dark:border-gray-700"> {/* Added top border for separation */} 
+            <div className="mb-8 pt-8 border-t border-gray-200 dark:border-gray-700 animate-slide-up opacity-0" style={{ animationDelay: showMoodTracker ? '500ms' : '300ms' }}> {/* Adjust delay based on mood tracker presence */}
               <div className="flex justify-between items-center mb-6">
                   <div>
                       <h2 className="text-2xl font-bold">Your Journal</h2>
