@@ -1,6 +1,9 @@
-
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { addMoodEntry } from '@/lib/moodStorage';
+import { toast } from '@/components/ui/use-toast';
 
 interface Mood {
   value: number;
@@ -18,91 +21,75 @@ const moods: Mood[] = [
 ];
 
 interface MoodTrackerProps {
-  onMoodSelect?: (mood: Mood) => void;
   className?: string;
 }
 
-const MoodTracker: React.FC<MoodTrackerProps> = ({ 
-  onMoodSelect,
-  className
-}) => {
+const MoodTracker: React.FC<MoodTrackerProps> = ({ className }) => {
   const [selectedMood, setSelectedMood] = useState<Mood | null>(null);
-  const [moodEntries, setMoodEntries] = useState<Array<{ date: Date; mood: Mood }>>([]);
-  
+  const [note, setNote] = useState('');
+
   const handleMoodSelect = (mood: Mood) => {
     setSelectedMood(mood);
-    
-    if (onMoodSelect) {
-      onMoodSelect(mood);
-    }
+    setNote('');
   };
-  
-  const saveMoodEntry = () => {
+
+  const handleSaveMood = () => {
     if (selectedMood) {
-      const newEntry = {
-        date: new Date(),
-        mood: selectedMood
-      };
-      
-      setMoodEntries(prev => [...prev, newEntry]);
-      setSelectedMood(null);
+      try {
+        addMoodEntry({
+          moodValue: selectedMood.value,
+          moodLabel: selectedMood.label,
+          note: note.trim() || undefined,
+        });
+        toast({ title: "Mood saved!", description: `You tracked feeling ${selectedMood.label}.` });
+        setSelectedMood(null);
+        setNote('');
+      } catch (error) {
+        console.error("Failed to save mood:", error);
+        toast({ title: "Error saving mood", variant: "destructive" });
+      }
     }
   };
-  
+
   return (
     <div className={cn("glass-card p-6", className)}>
-      <h3 className="text-xl font-medium mb-4">How are you feeling today?</h3>
-      
-      <div className="flex justify-center space-x-4 mb-8">
+      <h3 className="text-xl font-medium mb-4 text-center">How are you feeling today?</h3>
+
+      <div className="flex justify-center space-x-2 sm:space-x-4 mb-6">
         {moods.map(mood => (
-          <button
+          <Button
+            variant="outline"
             key={mood.value}
             onClick={() => handleMoodSelect(mood)}
             className={cn(
-              "w-12 h-12 rounded-full flex items-center justify-center text-xl transition-transform",
+              "w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center text-2xl transition-transform border-2",
               selectedMood?.value === mood.value
-                ? "transform scale-125 ring-2 ring-offset-2 ring-mental-300"
-                : "hover:scale-110",
+                ? `ring-2 ring-offset-2 ring-offset-background dark:ring-offset-gray-800 ring-mental-400 border-mental-400 dark:border-mental-500`
+                : "border-transparent hover:scale-110 hover:border-gray-300 dark:hover:border-gray-600"
             )}
             aria-label={mood.label}
+            title={mood.label}
           >
             {mood.icon}
-          </button>
+          </Button>
         ))}
       </div>
-      
+
       {selectedMood && (
-        <div className="animate-fade-in mb-6">
-          <p className="mb-4">You're feeling <span className="font-medium">{selectedMood.label}</span></p>
-          
-          <button
-            onClick={saveMoodEntry}
-            className="px-4 py-2 bg-mental-500 text-white rounded-full hover:bg-mental-600 transition-colors"
+        <div className="animate-fade-in space-y-4">
+          <p className="text-center">You're feeling <span className="font-medium">{selectedMood.label}</span>. Add a note? (Optional)</p>
+          <Textarea
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder={`What's contributing to feeling ${selectedMood.label.toLowerCase()}?`}
+            className="min-h-[80px]"
+          />
+          <Button
+            onClick={handleSaveMood}
+            className="w-full bg-mental-500 hover:bg-mental-600 transition-colors"
           >
             Save Entry
-          </button>
-        </div>
-      )}
-      
-      {moodEntries.length > 0 && (
-        <div className="mt-8">
-          <h4 className="text-lg font-medium mb-3">Recent Mood Entries</h4>
-          <div className="space-y-2">
-            {moodEntries.slice(-3).reverse().map((entry, idx) => (
-              <div 
-                key={idx}
-                className="flex items-center justify-between p-3 bg-white/50 rounded-lg"
-              >
-                <div className="flex items-center">
-                  <span className="text-xl mr-3">{entry.mood.icon}</span>
-                  <span>{entry.mood.label}</span>
-                </div>
-                <div className="text-sm text-calm-500">
-                  {entry.date.toLocaleDateString()} at {entry.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </div>
-              </div>
-            ))}
-          </div>
+          </Button>
         </div>
       )}
     </div>
